@@ -16,7 +16,7 @@ package org.hiveadmin.hive;
  * @date Jul 14, 2013 10:35:03 PM
  */
 public class HiveConst {
-	String RESTRICT="RESTRICT";
-	String CASCADE = "CASCADE";
+	public static String RESTRICT="RESTRICT";
+	public static String CASCADE = "CASCADE";
 
 }

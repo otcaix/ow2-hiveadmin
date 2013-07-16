@@ -39,7 +39,6 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 	@Override
 	public void createDatebase(String name, String comment, String hdfspath,
 			Map<String, String> dbproperties) throws Exception {
-		System.out.println("==============1");
 		if (name==null || name.trim().length()<1){
 			log.error("create database error. database name param is null");
 			throw new RuntimeException("create database error. database name param is null");
@@ -65,24 +64,19 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 			}
 			sql+=inner+")";
 		}
-		System.out.println("==============2");
-		System.out.println(sql);
 		Connection conn=null;
 		try{
 			 conn= HiveConnection.getConnection();
 			if (conn==null){
-				System.out.println("==============4");
 				log.error("get hive connection is null. can't do create database.");
 				throw new Exception("get hive connection is null. can't do create database.");
 			}
 			Statement stmt = conn.createStatement();
 			boolean res = stmt.execute(sql);
 			if(res != true){
-				System.out.println("==============5");
 				log.error("create database res:false");
 				throw new Exception("failed to create db. sql:"+sql);
 			}
-			System.out.println("==============6");	
 			log.info("success to create database. sql cmd:"+sql);
 			conn.close();
 		}catch(Exception e){
@@ -102,8 +96,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 			log.error("delete database error. database param is null");
 			throw new Exception("delete database error. database param is null");
 		}
-		String sql ="DROP DATABASE IF EXISTS "+name;
-		
+		String sql ="DROP DATABASE IF EXISTS  "+name+" ";
 		if(type !=null && type.trim().length()>0 ){
 			sql+= type;
 		}
@@ -120,6 +113,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 				log.info("success to delete database. sql:"+sql);
 			}
 		}catch(Exception e){
+			
 			log.info("failed to delete database. [sql:"+sql);
 			throw e;
 		}

@@ -2,12 +2,14 @@ package com.hiveadmin.example.action;
 import org.apache.hadoop.hive.jdbc.HiveDriver;
 import org.apache.hadoop.hive.jdbc.HiveDataSource;
 
+import java.sql.ResultSet;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
+import org.hiveadmin.hive.HiveConst;
 import org.hiveadmin.hive.service.HiveDatabaseService;
 import org.springframework.stereotype.Component;
 
@@ -47,8 +49,13 @@ public class ExampleUserAction extends ActionSupport{
 		msg="hello wangjie";
 		try {
 			//exampleUserService.register(new UserExample(1,"liguyi"));
-			hiveDatabaseService.createDatebase("xxxxx", null, null, null);
+			//hiveDatabaseService.createDatebase("xxxxx", null, null, null);
 			//hiveDatabaseService.listDatabase();
+			//hiveDatabaseService.deleteDatebase("xxxxx",HiveConst.RESTRICT);
+			ResultSet res = hiveDatabaseService.listDatabase();
+			while(res.next()){
+				System.out.println("======="+res.getString(1));
+			}
 		}catch(Exception e){
 			log.error("catch exception when regist user. msg:"+e.getMessage());
 			return ERROR;
