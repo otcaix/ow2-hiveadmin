@@ -10,12 +10,13 @@
 
 	<context:annotation-config />
 
-	<context:component-scan base-package="com.hiveadmin" />
+	<context:component-scan base-package="*" />
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations" value="classpath:com/hiveadmin/jdbc.properties" />
 	</bean>
 
+	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
@@ -32,5 +33,12 @@
 			<ref local="dataSource" />
 		</property>
 	</bean>
-
+	
+	<bean id="hiveConnection" class="org.hiveadmin.hive.hiveutils.HiveConnection">
+	    <property name="driverName" value="${jdbc.hive.driverClassName}"/>
+		<property name="url" value="${jdbc.hive.url}"/>
+		<property name="user" value="${jdbc.hive.username}"/>
+		<property name="password" value="${jdbc.hive.password}"/>
+	</bean>
+	
 </beans>
