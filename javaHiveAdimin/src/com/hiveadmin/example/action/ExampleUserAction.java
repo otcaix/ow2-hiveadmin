@@ -52,10 +52,9 @@ public class ExampleUserAction extends ActionSupport{
 			//hiveDatabaseService.createDatebase("xxxxx", null, null, null);
 			//hiveDatabaseService.listDatabase();
 			//hiveDatabaseService.deleteDatebase("xxxxx",HiveConst.RESTRICT);
-			ResultSet res = hiveDatabaseService.listDatabase();
-			while(res.next()){
-				System.out.println("======="+res.getString(1));
-			}
+			hiveDatabaseService.listDatabase();
+
+
 		}catch(Exception e){
 			log.error("catch exception when regist user. msg:"+e.getMessage());
 			return ERROR;

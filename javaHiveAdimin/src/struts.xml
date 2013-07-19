@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE struts PUBLIC
-    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 	<constant name="struts.devMode" value="true" />
 	<package name="default" extends="struts-default">
@@ -10,5 +10,19 @@
 			<result name="error">/errorexample.jsp</result>
 		</action>
 	</package>
+	<package name="database" extends="struts-default" namespace="/databaseAction" >
+		<action name="create" class="databaseAction" method="create">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="getDatabaseList" class="databaseAction" method="getHiveDatabaseList">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="deleteDatebase" class="databaseAction" method="deleteDatebase">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>		
+    </package>
 
 </struts>

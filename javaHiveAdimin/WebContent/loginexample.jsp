@@ -7,6 +7,13 @@
 <title>Test</title>
 </head>
 <body>
-    <h1><s:property value="msg"/></h1>
+    <h1>success</h1>
+ 	current user:<%=session.getAttribute("user")%><p>
+ 	database list:<p>
+ 	<s:iterator value="databaseList" id="s"> 
+ 		<s:property value="s"/>
+ 	</s:iterator>
+ 	
+ 	
 </body>
 </html>

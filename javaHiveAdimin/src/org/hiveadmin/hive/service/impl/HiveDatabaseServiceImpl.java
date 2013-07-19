@@ -1,17 +1,24 @@
 package org.hiveadmin.hive.service.impl;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
 import javax.annotation.Resource;
 
+import org.apache.hadoop.hive.jdbc.HiveConnection;
+import org.apache.hadoop.hive.ql.parse.HiveParser.metastoreCheck_return;
 import org.apache.hadoop.hive.ql.parse.HiveParser.restrictOrCascade_return;
 import org.apache.hadoop.hive.ql.parse.HiveParser_IdentifiersParser.booleanValue_return;
 import org.apache.log4j.Logger;
-import org.hiveadmin.hive.hiveutils.HiveConnection;
+import org.hiveadmin.hive.hiveutils.HiveConnectionBean;
 import org.hiveadmin.hive.service.HiveDatabaseService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -23,9 +30,19 @@ import org.springframework.stereotype.Service;
  */
 @Component(value="hiveDatabaseServiceImpl")
 public class HiveDatabaseServiceImpl implements HiveDatabaseService {
-
+	private HiveConnectionBean hiveConnection;
+	public HiveConnectionBean getHiveConnection() {
+		return hiveConnection;
+	}
+	@Resource
+	public void setHiveConnection(HiveConnectionBean hiveConnection) {
+		this.hiveConnection = hiveConnection;
+	}
 	private Logger log = Logger.getLogger(this.getClass());
-
+	private String curlog;
+	public String getLog(){
+		return this.curlog;
+	}
 	/**
 	 * @param name: 要创建的数据库名称
 	 * @param comment: 创建数据库的comment字段
@@ -41,7 +58,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 			Map<String, String> dbproperties) throws Exception {
 		if (name==null || name.trim().length()<1){
 			log.error("create database error. database name param is null");
-			throw new RuntimeException("create database error. database name param is null");
+			throw new Exception("create database error. database name param is null");
 		}
 		String sql = "CREATE DATABASE IF NOT EXISTS "+name;
 		if (comment !=null && comment.trim().length()>0){
@@ -66,7 +83,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 		}
 		Connection conn=null;
 		try{
-			 conn= HiveConnection.getConnection();
+			 conn= hiveConnection.getConnection();
 			if (conn==null){
 				log.error("get hive connection is null. can't do create database.");
 				throw new Exception("get hive connection is null. can't do create database.");
@@ -80,7 +97,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 			log.info("success to create database. sql cmd:"+sql);
 			conn.close();
 		}catch(Exception e){
-			log.error("failed to create database. sql cmd:"+sql);
+			log.error("failed to create database. sql cmd:"+sql +"[exception:"+e.getMessage()+"]");
 			throw new Exception("failed to create database. [sql cmd:"+sql);
 		}
 	}
@@ -102,7 +119,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 		}
 		try{
 			Connection conn =null;
-			conn = HiveConnection.getConnection();
+			conn = hiveConnection.getConnection();
 			Statement stmt = conn.createStatement();
 			boolean res = stmt.execute(sql);
 			if(res !=true){
@@ -112,6 +129,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 			else{
 				log.info("success to delete database. sql:"+sql);
 			}
+			conn.close();
 		}catch(Exception e){
 			
 			log.info("failed to delete database. [sql:"+sql);
@@ -122,17 +140,23 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 	 * @see org.hiveadmin.hive.service.HiveDatabaseService#listDatabase()
 	 */
 	@Override
-	public ResultSet listDatabase() throws Exception {
+	public List<String> listDatabase() throws Exception {
 		String sql = "show databases";
 		Connection conn = null;
-		conn= HiveConnection.getConnection();
+		conn= hiveConnection.getConnection();
 		if(conn==null){
 			log.error("get hive connection error!");
 			return null;
 		}
+		
 		Statement stmt = conn.createStatement();
 		ResultSet res = stmt.executeQuery(sql);
-		return res;
-	}
-
+		List<String> databaseList = new ArrayList<String>();
+		while(res.next()){
+			databaseList.add(res.getString(1));
+		}
+		res.close();
+		conn.close();
+		return databaseList;
+	}	
 }

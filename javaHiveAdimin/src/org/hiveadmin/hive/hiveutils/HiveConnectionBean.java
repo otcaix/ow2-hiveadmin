@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -27,30 +29,29 @@ import org.springframework.stereotype.Component;
  * @date Jul 16, 2013 11:08:09 AM
  */
 
-@Component
-public class HiveConnection {
+public class HiveConnectionBean {
 
 	private static String driverName;
 	private static String url;
 	private static String user;
 	private static String password;
 	//private Logger log = Logger.getLogger(this.getClass());
-	private static Connection connection=null;
-	private static Logger log = Logger.getLogger(HiveConnection.class);
+	private  Connection connection=null;
+	private static Logger log = Logger.getLogger(HiveConnectionBean.class);
 	
 	public static String getDriverName() {
 		return driverName;
 	}
 	public void setDriverName(String driverName) {
-		HiveConnection.driverName = driverName;
+		HiveConnectionBean.driverName = driverName;
 	}
 
 	public static String getUrl() {
 		return url;
 	}
-
+	@Resource
 	public void setUrl(String url) {
-		HiveConnection.url = url;
+		HiveConnectionBean.url = url;
 	}
 
 	public static String getUser() {
@@ -58,7 +59,7 @@ public class HiveConnection {
 	}
 
 	public void setUser(String user) {
-		HiveConnection.user = user;
+		HiveConnectionBean.user = user;
 	}
 
 	public static String getPassword() {
@@ -66,18 +67,17 @@ public class HiveConnection {
 	}
 
 	public void setPassword(String password) {
-		HiveConnection.password = password;
+		HiveConnectionBean.password = password;
 	}
 	
-	private HiveConnection(){}
+	private HiveConnectionBean(){}
 	
 	public static Connection getConnection() throws SQLException, ClassNotFoundException{
-		if(connection==null){
-			Class.forName(driverName);
-			log .info("url:["+url+"]user:["+user+"]pass:["+password+"]");
-			connection = DriverManager.getConnection(url, user, password);
-		}
-        return connection;
+		
+		Class.forName(driverName);
+		log .info("url:["+url+"]user:["+user+"]pass:["+password+"]");
+		return DriverManager.getConnection(url, user, password);
+        
 	}
-	
+
 }

@@ -34,7 +34,7 @@
 		</property>
 	</bean>
 	
-	<bean id="hiveConnection" class="org.hiveadmin.hive.hiveutils.HiveConnection">
+	<bean id="hiveConnection" class="org.hiveadmin.hive.hiveutils.HiveConnectionBean">
 	    <property name="driverName" value="${jdbc.hive.driverClassName}"/>
 		<property name="url" value="${jdbc.hive.url}"/>
 		<property name="user" value="${jdbc.hive.username}"/>
