@@ -13,11 +13,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
+import org.hiveadmin.hive.beans.HistoryRecord;
 import org.hiveadmin.hive.service.HiveDatabaseService;
 import org.springframework.stereotype.Component;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -94,6 +98,10 @@ public class DatabaseAction extends ActionSupport{
 	
 	public String create(){
 		try {
+			HistoryRecord historyRecord = new HistoryRecord();
+			historyRecord.setOp_user_name((String) ServletActionContext.getContext().getSession().get("user"));
+			historyRecord.setOp_desc("create database. [database:"+databaseName+"]");
+			hiveDatabaseService.setHistoryRecord(historyRecord);
 			hiveDatabaseService.createDatebase(databaseName, description, hdfspath, dbproperties);
 		} catch (Exception e) {
 			this.errorMsg = e.getMessage();
@@ -104,6 +112,10 @@ public class DatabaseAction extends ActionSupport{
 	}
 	public String getHiveDatabaseList(){
 		try {
+			HistoryRecord historyRecord = new HistoryRecord();
+			historyRecord.setOp_user_name((String) ServletActionContext.getContext().getSession().get("user"));
+			historyRecord.setOp_desc("get databases list.");
+			hiveDatabaseService.setHistoryRecord(historyRecord);
 			this.databaseList = hiveDatabaseService.listDatabase();
 			
 		} catch (Exception e) {
@@ -113,8 +125,12 @@ public class DatabaseAction extends ActionSupport{
 		
 		return SUCCESS;
 	}
-	public String deleteDatebase(){
+	public String deleteDatabase(){
 		try {
+			HistoryRecord record = new HistoryRecord();
+			record.setOp_user_name((String) ServletActionContext.getContext().getSession().get("user"));
+			record.setOp_desc("creata database.[database:"+databaseName+"]");
+			hiveDatabaseService.setHistoryRecord(record);
 			hiveDatabaseService.deleteDatebase(databaseName, type);
 		} catch (Exception e) {
 			this.errorMsg = e.getMessage();

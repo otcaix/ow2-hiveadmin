@@ -5,7 +5,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +20,11 @@ import org.apache.hadoop.hive.ql.parse.HiveParser.metastoreCheck_return;
 import org.apache.hadoop.hive.ql.parse.HiveParser.restrictOrCascade_return;
 import org.apache.hadoop.hive.ql.parse.HiveParser_IdentifiersParser.booleanValue_return;
 import org.apache.log4j.Logger;
+import org.hiveadmin.hive.beans.HistoryRecord;
+import org.hiveadmin.hive.dao.impl.UserHistoryLog;
 import org.hiveadmin.hive.hiveutils.HiveConnectionBean;
 import org.hiveadmin.hive.service.HiveDatabaseService;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -30,7 +35,26 @@ import org.springframework.stereotype.Service;
  */
 @Component(value="hiveDatabaseServiceImpl")
 public class HiveDatabaseServiceImpl implements HiveDatabaseService {
+	
 	private HiveConnectionBean hiveConnection;
+	
+	private UserHistoryLog userHistoryLog;
+	private HistoryRecord historyRecord;
+	
+	
+	public HistoryRecord getHistoryRecord() {
+		return historyRecord;
+	}
+	public void setHistoryRecord(HistoryRecord historyRecord) {
+		this.historyRecord = historyRecord;
+	}
+	public UserHistoryLog getUserHistoryLog() {
+		return userHistoryLog;
+	}
+	@Resource
+	public void setUserHistoryLog(UserHistoryLog userHistoryLog) {
+		this.userHistoryLog = userHistoryLog;
+	}
 	public HiveConnectionBean getHiveConnection() {
 		return hiveConnection;
 	}
@@ -81,6 +105,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 			}
 			sql+=inner+")";
 		}
+		historyRecord.setOp_sql(sql);
 		Connection conn=null;
 		try{
 			 conn= hiveConnection.getConnection();
@@ -95,9 +120,12 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 				throw new Exception("failed to create db. sql:"+sql);
 			}
 			log.info("success to create database. sql cmd:"+sql);
+			historyRecord.setOp_res(true);
+			userHistoryLog.addHistotyRecord(historyRecord);
 			conn.close();
 		}catch(Exception e){
 			log.error("failed to create database. sql cmd:"+sql +"[exception:"+e.getMessage()+"]");
+			historyRecord.setOp_res(false);
 			throw new Exception("failed to create database. [sql cmd:"+sql);
 		}
 	}
@@ -117,6 +145,7 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 		if(type !=null && type.trim().length()>0 ){
 			sql+= type;
 		}
+		historyRecord.setOp_sql(sql);
 		try{
 			Connection conn =null;
 			conn = hiveConnection.getConnection();
@@ -128,11 +157,15 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 			}
 			else{
 				log.info("success to delete database. sql:"+sql);
+				historyRecord.setOp_res(true);
+				userHistoryLog.addHistotyRecord(historyRecord);
+				conn.close();
 			}
-			conn.close();
 		}catch(Exception e){
 			
 			log.info("failed to delete database. [sql:"+sql);
+			historyRecord.setOp_res(false);
+			userHistoryLog.addHistotyRecord(historyRecord);
 			throw e;
 		}
 	}
@@ -148,15 +181,24 @@ public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 			log.error("get hive connection error!");
 			return null;
 		}
-		
-		Statement stmt = conn.createStatement();
-		ResultSet res = stmt.executeQuery(sql);
-		List<String> databaseList = new ArrayList<String>();
-		while(res.next()){
-			databaseList.add(res.getString(1));
+		historyRecord.setOp_sql(sql);
+		try{
+			Statement stmt = conn.createStatement();
+			ResultSet res = stmt.executeQuery(sql);
+			List<String> databaseList = new ArrayList<String>();
+			while(res.next()){
+				databaseList.add(res.getString(1));
+			}
+			res.close();
+			conn.close();
+			historyRecord.setOp_res(true);
+			userHistoryLog.addHistotyRecord(historyRecord);
+			return databaseList;
+			
+		}catch(Exception e){
+			historyRecord.setOp_res(false);
+			userHistoryLog.addHistotyRecord(historyRecord);
+			throw e;
 		}
-		res.close();
-		conn.close();
-		return databaseList;
 	}	
 }

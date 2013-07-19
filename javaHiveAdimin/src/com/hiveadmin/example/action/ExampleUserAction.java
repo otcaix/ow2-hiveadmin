@@ -8,8 +8,11 @@ import java.util.concurrent.ExecutionException;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hiveadmin.hive.HiveConst;
+import org.hiveadmin.hive.beans.HistoryRecord;
+import org.hiveadmin.hive.dao.impl.UserHistoryLog;
 import org.hiveadmin.hive.service.HiveDatabaseService;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +26,15 @@ public class ExampleUserAction extends ActionSupport{
 	private String msg;
 	private ExampleUserService exampleUserService;
 	private HiveDatabaseService hiveDatabaseService;
+	private UserHistoryLog userHistoryLog;
+	
+	public UserHistoryLog getUserHistoryLog() {
+		return userHistoryLog;
+	}
+	@Resource
+	public void setUserHistoryLog(UserHistoryLog userHistoryLog) {
+		this.userHistoryLog = userHistoryLog;
+	}
 	Logger log = Logger.getLogger(this.getClass());
 	
 	
@@ -52,8 +64,12 @@ public class ExampleUserAction extends ActionSupport{
 			//hiveDatabaseService.createDatebase("xxxxx", null, null, null);
 			//hiveDatabaseService.listDatabase();
 			//hiveDatabaseService.deleteDatebase("xxxxx",HiveConst.RESTRICT);
-			hiveDatabaseService.listDatabase();
-
+			//hiveDatabaseService.listDatabase();
+			HistoryRecord historyRecord = new HistoryRecord();
+			historyRecord.setOp_user_name((String) ServletActionContext.getContext().getSession().get("user"));
+			historyRecord.setOp_desc("create database.");
+			hiveDatabaseService.setHistoryRecord(historyRecord);
+			hiveDatabaseService.createDatebase("xxxxx", null, null, null);
 
 		}catch(Exception e){
 			log.error("catch exception when regist user. msg:"+e.getMessage());

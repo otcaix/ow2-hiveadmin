@@ -19,7 +19,7 @@
 			<result name="success">/loginexample.jsp</result>
 			<result name="error">/errorexample.jsp</result>
 		</action>
-		<action name="deleteDatebase" class="databaseAction" method="deleteDatebase">
+		<action name="deleteDatabase" class="databaseAction" method="deleteDatabase">
 			<result name="success">/loginexample.jsp</result>
 			<result name="error">/errorexample.jsp</result>
 		</action>		
