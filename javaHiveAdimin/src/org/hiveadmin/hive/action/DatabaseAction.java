@@ -129,7 +129,7 @@ public class DatabaseAction extends ActionSupport{
 		try {
 			HistoryRecord record = new HistoryRecord();
 			record.setOp_user_name((String) ServletActionContext.getContext().getSession().get("user"));
-			record.setOp_desc("creata database.[database:"+databaseName+"]");
+			record.setOp_desc("detele database. [database:"+databaseName+"]");
 			hiveDatabaseService.setHistoryRecord(record);
 			hiveDatabaseService.deleteDatebase(databaseName, type);
 		} catch (Exception e) {

@@ -24,5 +24,45 @@
 			<result name="error">/errorexample.jsp</result>
 		</action>		
     </package>
-
+    <package name="userHistoryRecord" extends="struts-default" namespace="/userHistory" >
+ 		<action name="getUserHistoryRecordList" class="userHistoryRecordAction" method="getUserHistoryRecordList">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>   
+    </package>  
+	<package name="hdfsOperation" extends="struts-default" namespace="/hdfsOperation" >
+ 		<action name="mkdirs" class="HDFSOperationAction" method="mkdirs">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="deletedirs" class="HDFSOperationAction" method="deletedirs">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="mkfile" class="HDFSOperationAction" method="mkfile">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="deletefile" class="HDFSOperationAction" method="deletefile">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="uploadfile" class="HDFSOperationAction" method="uploadfile">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="downloadfile" class="HDFSOperationAction" method="downloadfile">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="renamefile" class="HDFSOperationAction" method="renamefile">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="listFileStatus" class="HDFSOperationAction" method="listFileStatus">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>         
+    </package> 
+    
 </struts>

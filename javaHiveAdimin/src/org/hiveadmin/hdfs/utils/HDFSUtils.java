@@ -18,14 +18,29 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.log4j.Logger;
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
+import org.springframework.stereotype.Component;
 /***
  * HDFS Utils
  * @author 
  *
  */
 public class HDFSUtils {
-	
-	
+	private String ip;
+	private int port;
+
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	public int getPort() {
+		return port;
+	}
+	public void setPort(int port) {
+		this.port = port;
+	}
 	/**
 	 * 获取hdfs FileSystem
 	 * 
@@ -33,11 +48,11 @@ public class HDFSUtils {
 	 * @param port: hdfs port
 	 * @return : 若获取成功,返回文件系统引用,否则返回null 
 	 */
-	private  static Logger log = Logger.getLogger(HDFSUtils.class);
+	private  Logger log = Logger.getLogger(HDFSUtils.class);
 	
-	public synchronized static FileSystem getFileSystem(String ip, int port) {
+	public synchronized FileSystem getFileSystem() {
 		FileSystem fs = null;
-		String url = "hdfs://" + ip + ":" + String.valueOf(port);
+		String url = "hdfs://" +ip + ":" + String.valueOf(port);
 		Configuration config = new Configuration();
 		config.set("fs.default.name", url);
 		try {
@@ -57,7 +72,7 @@ public class HDFSUtils {
 	 * @param fs:文件系统引用
 	 * @return : 若获取成功返回DatanodeInfo列表,否则,若获取失败,返回null
 	 */
-	public synchronized static DatanodeInfo[] getDataNodeInfos(FileSystem fs) {
+	public synchronized DatanodeInfo[] getDataNodeInfos(FileSystem fs) {
 		DistributedFileSystem dfs = (DistributedFileSystem) fs;
 		DatanodeInfo[] infos=null;
 		try {
@@ -79,7 +94,7 @@ public class HDFSUtils {
 	 * @param fs
 	 * @return: 返回hdfs配置信息列表的迭代器
 	 */
-	public synchronized static Iterator<Entry<String, String>> getConfigEntrys(FileSystem fs) {
+	public synchronized Iterator<Entry<String, String>> getConfigEntrys(FileSystem fs) {
 		Iterator<Entry<String, String>> entrys = fs.getConf().iterator();
 		while (entrys.hasNext()) {
 			Entry<String, String> item = entrys.next();
@@ -97,7 +112,7 @@ public class HDFSUtils {
 	 * @throws Exception:若创建失败,抛出异常.
 	 * 
 	 */
-	public synchronized static void mkdirs(FileSystem fs, String dirName,boolean isroot) throws Exception {
+	public synchronized void mkdirs(FileSystem fs, String dirName,boolean isroot) throws Exception {
 		String dir;
 		if(isroot)
 			dir=dirName;
@@ -128,7 +143,7 @@ public class HDFSUtils {
 	 * @throws Exception :删除失败
 	 * 
 	 */
-	public synchronized static void rmdirs(FileSystem fs, String dirName,boolean isroot) throws Exception {
+	public synchronized void rmdirs(FileSystem fs, String dirName,boolean isroot) throws Exception {
 		String dir;
 		if(isroot)
 			dir = dirName;
@@ -158,7 +173,7 @@ public class HDFSUtils {
 	 * @param isroot:若为true,则是相对于根目录的路径,否则为相对于当前用户默认工作目录的路径
 	 * @throws Exception 
 	 */
-	public synchronized static void createNewFile(FileSystem fs,String fileName,boolean isroot) throws Exception{
+	public synchronized void createNewFile(FileSystem fs,String fileName,boolean isroot) throws Exception{
 		String path;
 		if(isroot)
 			path=fileName;
@@ -189,7 +204,7 @@ public class HDFSUtils {
 	 * @throws Exception :删除失败
 	 *
 	 */
-	public synchronized static void deleteFile(FileSystem fs,String fileName,boolean isroot) throws Exception{
+	public synchronized void deleteFile(FileSystem fs,String fileName,boolean isroot) throws Exception{
 		String path;
 		if(isroot)
 			path=fileName;
@@ -221,7 +236,7 @@ public class HDFSUtils {
 	 * @param isroot:hdfs路径是否是相对于根目录
 	 * @throws Exception 
 	 */
-	public synchronized static void upload(FileSystem fs, String local,
+	public synchronized void upload(FileSystem fs, String local,
 			String remote,boolean isroot) throws Exception{
 		String dstString;
 		if(isroot)
@@ -251,7 +266,7 @@ public class HDFSUtils {
 	 * @param isroot:hdfs文件路径是否是相对于根目录
 	 * @throws Exception :下载失败
 	 */
-	public synchronized static void download(FileSystem fs, String local,
+	public synchronized void download(FileSystem fs, String local,
 			String remote,boolean isroot) throws Exception {
 		String dstString;
 		if(isroot)
@@ -279,7 +294,7 @@ public class HDFSUtils {
 	 * @param newName:文件或文件夹新名
 	 * @throws Exception:创建失败
 	 */
-	public synchronized static void rename(FileSystem fs,String oldName,String newName,boolean isroot) throws Exception{
+	public synchronized void rename(FileSystem fs,String oldName,String newName,boolean isroot) throws Exception{
 		String oldpathString,newpathString;
 		if(isroot){
 			oldpathString =oldName;
@@ -316,7 +331,7 @@ public class HDFSUtils {
 	 * @return:若存在,返回true,否则返回false.
 	 * @throws IOException
 	 */
-	public synchronized static boolean exists(FileSystem fs,String dirName,boolean isroot) throws IOException{
+	public synchronized boolean exists(FileSystem fs,String dirName,boolean isroot) throws IOException{
 		String pathString;
 		if(isroot){
 			pathString = dirName;
@@ -347,7 +362,7 @@ public class HDFSUtils {
 	 * @return :副本数目
 	 * @throws IOException
 	 */
-	public synchronized static int getrep(FileSystem fs,String dirName,boolean isroot) throws IOException{
+	public synchronized int getrep(FileSystem fs,String dirName,boolean isroot) throws IOException{
 		String pathString;
 		if(isroot){
 			pathString = dirName;
@@ -375,7 +390,7 @@ public class HDFSUtils {
 	 * @return :若设置成功,返回true,否则false
 	 * @throws IOException
 	 */
-	public synchronized static boolean setrep(FileSystem fs,String fileName,short replication, boolean isroot) throws IOException{
+	public synchronized boolean setrep(FileSystem fs,String fileName,short replication, boolean isroot) throws IOException{
 		String pathString;
 		if(isroot){
 			pathString = fileName;
@@ -400,7 +415,7 @@ public class HDFSUtils {
 	 * @param isroot:是否是相对于根目录的路径
 	 * @return:获取成功返回>0的数,否则返回-1
 	 */
-	public synchronized static long getLastModifyTime(FileSystem fs,String dirName,boolean isroot){
+	public synchronized long getLastModifyTime(FileSystem fs,String dirName,boolean isroot){
 		String pathString;
 		if(isroot){
 			pathString=dirName;
@@ -448,7 +463,7 @@ public class HDFSUtils {
 	 * @param size
 	 * @return
 	 */
-	public synchronized static String convertSize(long size) {
+	public synchronized String convertSize(long size) {
 		String result = String.valueOf(size);
 		if (size < 1024 * 1024) {
 			result = String.valueOf(size / 1024) + " KB";
@@ -469,9 +484,10 @@ public class HDFSUtils {
 	 * @param path:文件目录,若传入路径为空,则列出当前用户的默认目录
 	 * @param isroot:是否是相对于根目录的路径
 	 * @return 
+	 * @throws Exception 
 	 * 
 	 */
-	public synchronized static  FileStatus[] listFileStatus(FileSystem fs, String path,boolean isroot) {
+	public synchronized FileStatus[] listFileStatus(FileSystem fs, String path,boolean isroot) throws Exception {
 		
 		Path dst;
 		if (null == path || "".equals(path)) {
@@ -491,8 +507,8 @@ public class HDFSUtils {
 			log.info("get fileListStatus. dirname:"+dst);
 			return flistStatus;
 		} catch (Exception e) {
-			log.error("failed to get file list status. dirName:"+dst);
-			return null;
+			log.error("failed to get file list status. [dirName:"+dst+"][exception msg:"+e.getMessage()+"]");
+			throw new Exception("failed to get file list status. [dirName:"+dst+"][exception msg:"+e.getMessage()+"]");
 		}
 	}
 	
@@ -567,18 +583,18 @@ public class HDFSUtils {
 		return content;
 	}
 */	public static void main(String[] args) throws Exception{
-		FileSystem fs = HDFSUtils.getFileSystem("127.0.0.1", 9000);
-		HDFSUtils.getDataNodeInfos(fs);
+		//FileSystem fs = HDFSUtils.getFileSystem("127.0.0.1", 9000);
+		//HDFSUtils.getDataNodeInfos(fs);
 		//HDFSUtils.listConfig(fs);
 		//HDFSUtils.mkdirs(fs, "/home/jiege/com/once/i/love/you");
 		//HDFSUtils.rmdirs(fs, "/home/jiege/com/once/i/love/you");
 		//HDFSUtils.createNewFile(fs, "/home/jiege/com/once/i/love/newfile");
 		//HDFSUtils.deleteFile(fs, "/home/jiege/com/once/i/love/newfile");
-		FileStatus[] flist = HDFSUtils.listFileStatus(fs, "/user/jiege/home/jiege/com/once",true);
-		System.out.println("================");
-		for(FileStatus f:flist){
-			System.out.println("path:"+f.getPath()+". owner:"+f.getOwner()+". len:"+f.getLen()+". accesstime:"+f.getAccessTime());
-		}
+		//FileStatus[] flist = HDFSUtils.listFileStatus(fs, "/user/jiege/home/jiege/com/once",true);
+		//System.out.println("================");
+		//for(FileStatus f:flist){
+		//	System.out.println("path:"+f.getPath()+". owner:"+f.getOwner()+". len:"+f.getLen()+". accesstime:"+f.getAccessTime());
+		//}
 }
 	
 }

@@ -9,6 +9,8 @@
 */
 package org.hiveadmin.hive.dao;
 
+import java.util.List;
+
 import org.hiveadmin.hive.beans.HistoryRecord;
 
 /**
@@ -19,4 +21,5 @@ import org.hiveadmin.hive.beans.HistoryRecord;
  */
 public interface UserHistory {
 	public void addHistotyRecord(HistoryRecord record);
+	public List<HistoryRecord> getHistoryRecord(String userName,String sort);
 }

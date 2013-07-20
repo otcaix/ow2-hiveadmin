@@ -19,6 +19,7 @@ package org.hiveadmin.hive.beans;
 public class User {
 	private int userid;
 	private String username;
+	private String usergroup;
 	private String userpass;
 	public int getUserid() {
 		return userid;
@@ -38,4 +39,11 @@ public class User {
 	public void setUserpass(String userpass) {
 		this.userpass = userpass;
 	}
+	public String getUsergroup() {
+		return usergroup;
+	}
+	public void setUsergroup(String usergroup) {
+		this.usergroup = usergroup;
+	}
+	
 }

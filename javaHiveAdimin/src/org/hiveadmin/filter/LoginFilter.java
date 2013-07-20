@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.catalina.Session;
+import org.hiveadmin.hive.beans.User;
 
 /**
  * Servlet Filter implementation class LoginFilter
@@ -40,9 +41,17 @@ public class LoginFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpSession session = req.getSession();
 		String user = (String) session.getAttribute("user");
+		User userInfo = (User) session.getAttribute("userInfo");
 		if(user==null||user.trim().length()==0){
 			session.setAttribute("user", "admin");
 			System.out.print("do filter");
+		}
+		if(userInfo==null){
+			userInfo = new User();
+			userInfo.setUsername("admin");
+			userInfo.setUsergroup("admin");
+			session.setAttribute("userInfo", userInfo);
+			System.out.println("====set userinfo");
 		}
 		chain.doFilter(request, response);
 	}

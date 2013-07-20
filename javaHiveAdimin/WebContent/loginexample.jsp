@@ -14,6 +14,9 @@
  		<s:property value="s"/>
  	</s:iterator>
  	
- 	
+ 	user history list:<p>
+ 	<s:iterator value="historyRecordList"> 
+ 		<s:property value="op_record_id"/> : <s:property value="op_user_name"/>:<s:property value="op_desc"/>:<s:property value="op_sql"/>
+ 	</s:iterator><p>
 </body>
 </html>

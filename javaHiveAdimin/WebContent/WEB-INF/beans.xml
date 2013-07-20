@@ -40,5 +40,9 @@
 		<property name="user" value="${jdbc.hive.username}"/>
 		<property name="password" value="${jdbc.hive.password}"/>
 	</bean>
+	<bean id="hdfsUtils" class="org.hiveadmin.hdfs.utils.HDFSUtils">
+	    <property name="ip" value="${hadoop.ip}"/>
+		<property name="port" value="${hadoop.port}"/>
+	</bean>
 	
 </beans>
