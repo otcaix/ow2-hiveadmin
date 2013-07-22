@@ -4,6 +4,7 @@
     "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 	<constant name="struts.devMode" value="true" />
+	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!^-]*"/>
 	<package name="default" extends="struts-default">
 		<action name="loginexample" class="exampleUserAction" method="login">
 			<result name="success">/loginexample.jsp</result>
@@ -64,5 +65,33 @@
 			<result name="error">/errorexample.jsp</result>
 		</action>         
     </package> 
-    
+	<package name="hiveSqlTemplate" extends="struts-default" namespace="/hiveSqlTemplate" >
+		<action name="createHiveSqlTemplate" class="hiveSqlTemplateAction" method="createHiveSqlTemplate">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="deleteHiveSqlTemplate" class="hiveSqlTemplateAction" method="deleteHiveSqlTemplate">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="updateHiveSqlTemplate" class="hiveSqlTemplateAction" method="updateHiveSqlTemplate">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="fetchHiveSqlTemplate" class="hiveSqlTemplateAction" method="fetchHiveSqlTemplate">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		
+		<action name="fetchHiveSqlTemplateList" class="hiveSqlTemplateAction" method="fetchHiveSqlTemplateList">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="executeHiveSqlTemplate" class="hiveSqlTemplateAction" method="executeHiveSqlTemplate">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		
+		
+	</package>        
 </struts>
