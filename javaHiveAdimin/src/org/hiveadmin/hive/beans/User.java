@@ -9,6 +9,8 @@
 */
 package org.hiveadmin.hive.beans;
 
+import java.io.Serializable;
+
 /**
  * @ClassName User
  * @Description TODO
@@ -16,11 +18,24 @@ package org.hiveadmin.hive.beans;
  * @date Jul 19, 2013 9:09:26 PM
  */
 
-public class User {
+@SuppressWarnings("serial")
+public class User implements Serializable{
 	private int userid;
 	private String username;
 	private String usergroup;
 	private String userpass;
+	
+	
+	public User() {
+		super();
+	}
+	public User(int id,String username, String usergroup, String userpass) {
+		super();
+		this.userid	= id;
+		this.username = username;
+		this.usergroup = usergroup;
+		this.userpass = userpass;
+	}
 	public int getUserid() {
 		return userid;
 	}

@@ -9,11 +9,11 @@
 */
 package org.hiveadmin.hive.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -21,7 +21,6 @@ import org.hiveadmin.hive.beans.HistoryRecord;
 import org.hiveadmin.hive.service.HiveDatabaseService;
 import org.springframework.stereotype.Component;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -44,8 +43,15 @@ public class DatabaseAction extends ActionSupport{
 	private Logger log = Logger.getLogger(DatabaseAction.class);
 	private List<String> databaseList;
 	
+	private String result;
 	
-	public List<String> getDatabaseList() {
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
+	}
+	public List<String> getDatabaseList () {
 		return databaseList;
 	}
 	public void setDatabaseList(List<String> databaseList) {
@@ -111,7 +117,7 @@ public class DatabaseAction extends ActionSupport{
 		return SUCCESS;
 	}
 	public String getHiveDatabaseList(){
-		try {
+		/*try {
 			HistoryRecord historyRecord = new HistoryRecord();
 			historyRecord.setOp_user_name((String) ServletActionContext.getContext().getSession().get("user"));
 			historyRecord.setOp_desc("get databases list.");
@@ -121,8 +127,11 @@ public class DatabaseAction extends ActionSupport{
 		} catch (Exception e) {
 			this.errorMsg = e.getMessage();
 			return ERROR;
-		}
-		
+		}*/
+		this.databaseList=new ArrayList<String>();
+		this.databaseList.add("Default");
+		this.databaseList.add("yun");
+		this.databaseList.add("ss");
 		return SUCCESS;
 	}
 	public String deleteDatabase(){

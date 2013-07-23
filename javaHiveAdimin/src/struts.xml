@@ -3,95 +3,23 @@
     "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
     "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
-	<constant name="struts.devMode" value="true" />
-	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!^-]*"/>
-	<package name="default" extends="struts-default">
-		<action name="loginexample" class="exampleUserAction" method="login">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-	</package>
-	<package name="database" extends="struts-default" namespace="/databaseAction" >
-		<action name="create" class="databaseAction" method="create">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="getDatabaseList" class="databaseAction" method="getHiveDatabaseList">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="deleteDatabase" class="databaseAction" method="deleteDatabase">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>		
+	 <!-- 该属性指定需要Struts2处理的请求后缀，该属性的默认值是action，即所有匹配*.action的请求都由Struts2处理。
+        如果用户需要指定多个请求后缀，则多个后缀之间以英文逗号（,）隔开。 -->
+    <constant name="struts.action.extension" value="do" />
+    <!-- 设置浏览器是否缓存静态内容,默认值为true(生产环境下使用),开发阶段最好关闭 -->
+    <constant name="struts.serve.static.browserCache" value="false" />
+    <!-- 当struts的配置文件修改后,系统是否自动重新加载该文件,默认值为false(生产环境下使用),开发阶段最好打开 -->
+    <constant name="struts.configuration.xml.reload" value="true" />
+    <!-- 开发模式下使用,这样可以打印出更详细的错误信息 -->
+    <constant name="struts.devMode" value="true" />
+    <!-- 默认的视图主题 -->
+    <!-- <constant name="struts.ui.theme" value="simple" /> -->
+    <!-- <constant name="struts.objectFactory" value="spring" />  -->
+    <package name="userAjax" extends="json-default">
+        <action name="loginAction" class="org.hiveadmin.hive.action.UserAction" method="login">
+            <result type="json">
+            	<param name="root">user</param>
+            </result>
+        </action>
     </package>
-    <package name="userHistoryRecord" extends="struts-default" namespace="/userHistory" >
- 		<action name="getUserHistoryRecordList" class="userHistoryRecordAction" method="getUserHistoryRecordList">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>   
-    </package>  
-	<package name="hdfsOperation" extends="struts-default" namespace="/hdfsOperation" >
- 		<action name="mkdirs" class="HDFSOperationAction" method="mkdirs">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="deletedirs" class="HDFSOperationAction" method="deletedirs">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="mkfile" class="HDFSOperationAction" method="mkfile">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="deletefile" class="HDFSOperationAction" method="deletefile">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="uploadfile" class="HDFSOperationAction" method="uploadfile">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="downloadfile" class="HDFSOperationAction" method="downloadfile">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="renamefile" class="HDFSOperationAction" method="renamefile">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="listFileStatus" class="HDFSOperationAction" method="listFileStatus">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>         
-    </package> 
-	<package name="hiveSqlTemplate" extends="struts-default" namespace="/hiveSqlTemplate" >
-		<action name="createHiveSqlTemplate" class="hiveSqlTemplateAction" method="createHiveSqlTemplate">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="deleteHiveSqlTemplate" class="hiveSqlTemplateAction" method="deleteHiveSqlTemplate">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="updateHiveSqlTemplate" class="hiveSqlTemplateAction" method="updateHiveSqlTemplate">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="fetchHiveSqlTemplate" class="hiveSqlTemplateAction" method="fetchHiveSqlTemplate">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		
-		<action name="fetchHiveSqlTemplateList" class="hiveSqlTemplateAction" method="fetchHiveSqlTemplateList">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		<action name="executeHiveSqlTemplate" class="hiveSqlTemplateAction" method="executeHiveSqlTemplate">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
-		</action>
-		
-		
-	</package>        
 </struts>
