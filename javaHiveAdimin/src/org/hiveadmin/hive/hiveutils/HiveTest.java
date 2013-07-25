@@ -9,7 +9,7 @@ import java.sql.Statement;
 public class HiveTest {
 
 	private static String driverName="org.apache.hadoop.hive.jdbc.HiveDriver";
-	private static String url="jdbc:hive://192.168.22.11:10000/";
+	private static String url="jdbc:hive://127.0.0.1:10000/";
 	private static String user="";
 	private static String password="";
 	private static String sql="";
@@ -17,7 +17,7 @@ public class HiveTest {
 	//private Logger log = Logger.getLogger(this.getClass());
 	
 	public static void main(String[] args) throws Exception{
-		    System.out.println();
+		        
 	        Class.forName(driverName);
             Connection conn = DriverManager.getConnection(url, user, password);
             Statement stmt = conn.createStatement();
