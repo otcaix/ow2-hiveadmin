@@ -17,6 +17,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+import org.apache.hadoop.hive.ql.parse.HiveParser_IdentifiersParser.booleanValue_return;
 import org.apache.log4j.Logger;
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.springframework.stereotype.Component;
@@ -233,11 +234,12 @@ public class HDFSUtils {
 	 * @param fs
 	 * @param local:本地文件路径
 	 * @param remote:hdfs文件路径
+	 * @param isOverWrite:是否覆盖
 	 * @param isroot:hdfs路径是否是相对于根目录
 	 * @throws Exception 
 	 */
 	public synchronized void upload(FileSystem fs, String local,
-			String remote,boolean isroot) throws Exception{
+			String remote,boolean isOverWirte,boolean isroot) throws Exception{
 		String dstString;
 		if(isroot)
 			dstString=remote;
@@ -248,7 +250,7 @@ public class HDFSUtils {
 		Path src = new Path(local);
 		long begin = System.currentTimeMillis();
 		try{
-			fs.copyFromLocalFile(false, true, src, dst);
+			fs.copyFromLocalFile(false, isOverWirte, src, dst);
 			log.info("upload from local to remote success. [local:" + local + "][remote:" + remote + "]");
 			log.info("[time costs to upload:"+(System.currentTimeMillis() - begin)+"]");
 		}catch(Exception e){

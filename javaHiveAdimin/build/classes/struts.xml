@@ -52,9 +52,15 @@
 			<result name="success">/loginexample.jsp</result>
 			<result name="error">/errorexample.jsp</result>
 		</action>
-		<action name="downloadfile" class="HDFSOperationAction" method="downloadfile">
-			<result name="success">/loginexample.jsp</result>
-			<result name="error">/errorexample.jsp</result>
+		<action name="downloadfile" class="HDFSOperationAction">
+		    
+			<result name="success" type="stream">
+			    <param name="contentType">text/plain</param>
+			    <param name="inputName">downloadfile</param>
+			    <param name="contentDisposition">attachment;filename="${remoteFileName}"</param>
+			    <param name="bufferSize">4096</param>
+			</result>
+			<result name="error">errorexample.jsp</result>
 		</action>
 		<action name="renamefile" class="HDFSOperationAction" method="renamefile">
 			<result name="success">/loginexample.jsp</result>

@@ -9,11 +9,17 @@
 */
 package org.hiveadmin.hive.action;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
 import javax.annotation.Resource;
 
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
+import org.eclipse.jdt.internal.compiler.lookup.InferenceContext;
 import org.hiveadmin.hdfs.utils.HDFSUtils;
 import org.hiveadmin.hive.beans.User;
 import org.springframework.stereotype.Component;
@@ -35,14 +41,21 @@ public class HDFSOperationAction extends ActionSupport {
 	private boolean isroot;
 	private String fileName;
 	private String remotepath;
+	private String remoteFileName;
 	private String localpath;
 	
 	private String newName;
 	private String oldName;
 	private String listfilepath;
 	
+	private String title;
+	private File upload;
+	private String uploadContentType;
+	private String uploadFileName;
+	
 	Logger log = Logger.getLogger(HDFSOperationAction.class);
 	private FileStatus[] fileStatusArray;
+	private String savePath;
 		
 	public String getListfilepath() {
 		return listfilepath;
@@ -65,6 +78,9 @@ public class HDFSOperationAction extends ActionSupport {
 	}
 
 	
+	public void setRemoteFileName(String remoteFileName) {
+		this.remoteFileName = remoteFileName;
+	}
 	public String getRemotepath() {
 		return remotepath;
 	}
@@ -91,6 +107,12 @@ public class HDFSOperationAction extends ActionSupport {
 		this.hdfsUtils = hdfsUtils;
 	}
 	
+	public String getSavePath() {
+		return savePath;
+	}
+	public void setSavePath(String savePath) {
+		this.savePath = savePath;
+	}
 	public String getDirName() {
 		return dirName;
 	}
@@ -109,6 +131,47 @@ public class HDFSOperationAction extends ActionSupport {
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}
+	
+	
+	
+	public String getRemoteFileName() {
+		return remoteFileName;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public File getUpload() {
+		return upload;
+	}
+	public void setUpload(File upload) {
+		this.upload = upload;
+	}
+	public String getUploadContentType() {
+		return uploadContentType;
+	}
+	public void setUploadContentType(String uploadContentType) {
+		this.uploadContentType = uploadContentType;
+	}
+	public String getUploadFileName() {
+		return uploadFileName;
+	}
+	public void setUploadFileName(String uploadFileName) {
+		this.uploadFileName = uploadFileName;
+	}
+	public FileStatus[] getFileStatusArray() {
+		return fileStatusArray;
+	}
+	public void setFileStatusArray(FileStatus[] fileStatusArray) {
+		this.fileStatusArray = fileStatusArray;
+	}
+	public String setSavePath() throws Exception{
+		return ServletActionContext.getServletContext().getRealPath("WEB-INF/"+savePath);
+	}
+	
+	
 	public void judgeRoot(){
 		User curUser = (User)ServletActionContext.getContext().getSession().get("userInfo");
 		if(curUser.getUsergroup().equals("admin")){
@@ -173,30 +236,47 @@ public class HDFSOperationAction extends ActionSupport {
 	}
 	public String uploadfile(){
 		judgeRoot();
+		String tempFilePath = null;
 		try {
-			hdfsUtils.upload(hdfsUtils.getFileSystem(), localpath, remotepath, isroot);
+			//tempFilePath = getSavePath()+"/"+getUploadFileName();
+			tempFilePath = ServletActionContext.getServletContext().getRealPath("/")+"/upload/"+getUploadFileName();
+			FileOutputStream fos = new FileOutputStream(tempFilePath);
+			FileInputStream fis = new FileInputStream(getUpload());
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while((len=fis.read(buffer))>0){
+				fos.write(buffer, 0, len);
+			}
+			hdfsUtils.upload(hdfsUtils.getFileSystem(), tempFilePath, remotepath,true,isroot);
 		} catch (Exception e) {
 		
-			log.error("upload file failed. [localpath:"+localpath+"][remotepath"+remotepath+"][exception msg:"+e.getMessage()+"]");
-			errorMsg = "upload file failed. [localpath:"+localpath+"][remotepath"+remotepath+"][exception msg:"+e.getMessage()+"]";
+			log.error("upload file failed. [tempFilePath:"+tempFilePath+"][remotepath"+remotepath+"][exception msg:"+e.getMessage()+"]");
+			errorMsg = "upload file failed. [tempFilePath:"+tempFilePath+"][remotepath"+remotepath+"][exception msg:"+e.getMessage()+"]";
 			return ERROR;
 		}
-		log.info("upload file success. [localpath:"+localpath+"][remotepath"+remotepath+"]");
+		log.info("upload file success. [tempFilePath:"+tempFilePath+"][remotepath"+remotepath+"]");
 		return SUCCESS;
 	}
 	
-	public String downloadfile(){
+	public InputStream getDownloadfile(){
 		judgeRoot();
+		String tempFilePath = null;
 		try {
-			hdfsUtils.download(hdfsUtils.getFileSystem(), localpath, remotepath, isroot);
+			String remoteFileNameString = new File(remotepath).getName();
+			tempFilePath = ServletActionContext.getServletContext().getRealPath("/")+"/download/"+remoteFileNameString;
+			setRemoteFileName(remoteFileNameString);
+			
+			log.info("remote file name:"+remoteFileNameString);
+			hdfsUtils.download(hdfsUtils.getFileSystem(), tempFilePath, remotepath, isroot);
+			log.info("download file success. [tempFilePath:"+tempFilePath+"][rmotepath:"+remotepath+"]");
+			return new FileInputStream(tempFilePath);
 		} catch (Exception e) {
-			log.info("download file failed. [localpath:"+localpath+"][rmotepath:"+remotepath+"][exception msg:"+remotepath+"]");
-			errorMsg = "download file failed. [localpath:"+localpath+"][rmotepath:"+remotepath+"][exception msg:"+remotepath+"]";
-			return ERROR;
+			log.info("download file failed. [tempFilePath:"+tempFilePath+"][rmotepath:"+remotepath+"][exception msg:"+remotepath+"]");
+			errorMsg = "download file failed. [tempFilePath:"+tempFilePath+"][rmotepath:"+remotepath+"][exception msg:"+remotepath+"]";
+			return null;
 		}
-		log.info("download file success. [localpath:"+localpath+"][rmotepath:"+remotepath+"]");
-		return SUCCESS;
 	}
+
 	public String renamefile(){
 		judgeRoot();
 		try {
@@ -206,7 +286,7 @@ public class HDFSOperationAction extends ActionSupport {
 			errorMsg = "rename file failed. [oldNae:"+oldName+"][newName:"+newName+"][exception msg:"+e.getMessage()+"]";
 			return ERROR;
 		}
-		log.info("rename file success. [oldNae:"+oldName+"][newName:"+newName+"]");
+		log.info("rename file success. [oldName:"+oldName+"][newName:"+newName+"]");
 		return SUCCESS;
 	}
 	

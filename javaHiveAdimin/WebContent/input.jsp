@@ -8,6 +8,22 @@
 <title>Insert title here</title>
 </head>
 <body>
+<h2>HDFS upload---------/hdfsOperation/uploadfile</h2>
+<s:form action="uploadfile" namespace="/hdfsOperation" enctype="multipart/form-data">
+	<s:file name="upload" label="choose file"/><br/>
+	<s:textfield name="remotepath" label="hdfs path"/>
+	<s:submit value="upload"/>
+</s:form>
+
+<hr>
+<h2>HDFS download---------/hdfsOperation/downloadfile</h2>
+<s:form action="downloadfile" namespace="/hdfsOperation">
+
+	<s:textfield name="remotepath" label="hdfs path"/>
+	<s:submit value="download"/>
+</s:form>
+
+<hr>
 <h2>HiveSqlTemplateService---createHiveSqlTemplate</h2>
 <s:form action="createHiveSqlTemplate" namespace="/hiveSqlTemplate">
 	<s:textfield label="template name" name="hiveSqlTemplateBean.temp_name"></s:textfield>
