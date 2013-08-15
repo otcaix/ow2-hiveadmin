@@ -99,5 +99,21 @@
 		</action>
 		
 		
-	</package>        
+	</package>
+	
+	<package name="hivecli" extends="struts-default" namespace="/hivecli">
+		<action name="hiveCliQuery" class="hiveCliAction" method="hiveCliQuery">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="getQueryStatus" class="hiveCliAction" method="getQueryStatus">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="getResult" class="hiveCliAction" method="getResult">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		
+	</package> 
 </struts>

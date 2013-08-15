@@ -25,7 +25,11 @@ public class HistoryRecord {
 	private String op_sql;
 	private boolean op_res;
 	private Timestamp op_ts;
+	private String status;
+	private String resultfile;
+	
 	public HistoryRecord(){}
+	
 	public HistoryRecord(int recordid,String username,String desc,String sql,boolean res,Timestamp ts){
 		this.op_record_id = recordid;
 		this.op_user_name = username;
@@ -35,6 +39,22 @@ public class HistoryRecord {
 		this.op_ts = ts;
 	}
 	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getResultfile() {
+		return resultfile;
+	}
+
+	public void setResultfile(String resultfile) {
+		this.resultfile = resultfile;
+	}
+
 	public String getOp_user_name() {
 		return op_user_name;
 	}

@@ -22,6 +22,7 @@ import org.apache.struts2.ServletActionContext;
 import org.eclipse.jdt.internal.compiler.lookup.InferenceContext;
 import org.hiveadmin.hdfs.utils.HDFSUtils;
 import org.hiveadmin.hive.beans.User;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -33,6 +34,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @date Jul 20, 2013 10:20:35 AM
  */
 @Component
+@Scope("session")
 public class HDFSOperationAction extends ActionSupport {
 	
 	HDFSUtils hdfsUtils;

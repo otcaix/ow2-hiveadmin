@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.hiveadmin.hive.beans.HiveSqlTemplateBean;
 import org.hiveadmin.hive.service.HiveSqlTemplateService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -33,6 +34,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @date Jul 20, 2013 5:09:01 PM
  */
 @Component
+@Scope("session")
 public class HiveSqlTemplateAction extends ActionSupport{
 	
 	private HiveSqlTemplateService hiveSqlTemplateService;

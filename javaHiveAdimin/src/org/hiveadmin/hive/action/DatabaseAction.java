@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.hiveadmin.hive.beans.HistoryRecord;
 import org.hiveadmin.hive.service.HiveDatabaseService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -31,6 +32,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @date Jul 19, 2013 4:31:06 PM
  */
 @Component
+@Scope("session")
 public class DatabaseAction extends ActionSupport{
 	
 	private String databaseName;
