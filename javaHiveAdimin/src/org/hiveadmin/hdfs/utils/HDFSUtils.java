@@ -8,8 +8,12 @@
 * @version V1.0  
 */
 package org.hiveadmin.hdfs.utils;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;	
@@ -17,9 +21,12 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+import org.apache.hadoop.hive.ql.parse.HiveParser.indexComment_return;
 import org.apache.hadoop.hive.ql.parse.HiveParser_IdentifiersParser.booleanValue_return;
 import org.apache.log4j.Logger;
+import org.aspectj.apache.bcel.generic.NEW;
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
+import org.hiveadmin.hive.beans.FileStatusBean;
 import org.springframework.stereotype.Component;
 /***
  * HDFS Utils
@@ -489,25 +496,28 @@ public class HDFSUtils {
 	 * @throws Exception 
 	 * 
 	 */
-	public synchronized FileStatus[] listFileStatus(FileSystem fs, String path,boolean isroot) throws Exception {
-		
-		Path dst;
-		if (null == path || "".equals(path)) {
-			dst = fs.getWorkingDirectory();
-		} else {
-			String dstString;
-			if(isroot){
-				dstString = path;
-			}else {
-				dstString=fs.getWorkingDirectory()+"/"+path;
-			}
-			dst = new Path(dstString);
+	public synchronized List<FileStatusBean> listFileStatus(FileSystem fs, String path,boolean isroot) throws Exception {
+		log.info("<<<<<<<<<hdfsutil listfilestatus:");
+		log.info("param.[path:"+path);
+		if (null == path || path.trim().length()==0){
+			path="/";
+			log.info("param path is null, reset path to root path:/");
 		}
+		if(!isroot){
+			path=fs.getWorkingDirectory()+"/"+path;
+		}
+		log.info("caculalte path:"+path);
+		Path dst = new Path(path);
+	
 		try {
 			String relativePath = "";
 			FileStatus[] flistStatus = fs.listStatus(dst);
+			List<FileStatusBean> filstStatusBeans = new ArrayList<FileStatusBean>();
+			for(FileStatus status : flistStatus){
+				filstStatusBeans.add(new FileStatusBean(status));
+			}
 			log.info("get fileListStatus. dirname:"+dst);
-			return flistStatus;
+			return filstStatusBeans;
 		} catch (Exception e) {
 			log.error("failed to get file list status. [dirName:"+dst+"][exception msg:"+e.getMessage()+"]");
 			throw new Exception("failed to get file list status. [dirName:"+dst+"][exception msg:"+e.getMessage()+"]");
@@ -597,7 +607,27 @@ public class HDFSUtils {
 		//for(FileStatus f:flist){
 		//	System.out.println("path:"+f.getPath()+". owner:"+f.getOwner()+". len:"+f.getLen()+". accesstime:"+f.getAccessTime());
 		//}
+		URI uri = new URI("htfs://127.0.0.1:9000/haha/xx/");
+		System.out.println(new File(uri.getPath()).getParent());
 }
+	/** 
+	* @Title: isDirectory 
+	* @Description: TODO
+	* @param @param path
+	* @param @return    设定文件 
+	* @return boolean    返回类型 
+	* @throws 
+	*/
+	public boolean isDirectory(Path path) {
+		try {
+			boolean isdir = getFileSystem().isDirectory(path);
+			System.out.println("isdir:"+isdir);
+			return isdir;
+		} catch (IOException e) {
+			log.equals("failed to judge whether the path is directory. path:"+path.toString()+". exception:"+e.getMessage());
+			return false;
+		}
+	}
 	
 }
 

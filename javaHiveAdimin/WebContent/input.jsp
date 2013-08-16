@@ -10,7 +10,7 @@
 </head>
 <body>
 <h2>HDFS upload---------/hdfsOperation/uploadfile</h2>
-<s:form action="uploadfile" namespace="/hdfsOperation" enctype="multipart/form-data">
+<s:form action="uploadfile" namespace="/hdfsOperation" enctype="multipart/form-data" method="post">
 	<s:file name="upload" label="choose file"/><br/>
 	<s:textfield name="remotepath" label="hdfs path"/>
 	<s:submit value="upload"/>

@@ -13,14 +13,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.ql.parse.HiveParser_IdentifiersParser.nullCondition_return;
+import org.apache.hadoop.mapred.JobHistory.HistoryCleaner;
 import org.apache.log4j.Logger;
+import org.apache.naming.java.javaURLContextFactory;
 import org.apache.struts2.ServletActionContext;
 import org.eclipse.jdt.internal.compiler.lookup.InferenceContext;
 import org.hiveadmin.hdfs.utils.HDFSUtils;
+import org.hiveadmin.hive.beans.FileStatusBean;
 import org.hiveadmin.hive.beans.User;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -49,16 +57,33 @@ public class HDFSOperationAction extends ActionSupport {
 	private String newName;
 	private String oldName;
 	private String listfilepath;
+	private String listfilepathparent;
 	
+	public String getListfilepathparent() {
+		this.listfilepathparent = (new File(this.listfilepath)).getParent();
+		if(this.listfilepath==null)
+			this.listfilepath="/";
+		return this.listfilepathparent;
+	}
+	public void setListfilepathparent(String listfilepathparent) {
+		this.listfilepathparent = listfilepathparent;
+	}
 	private String title;
 	private File upload;
 	private String uploadContentType;
 	private String uploadFileName;
 	
 	Logger log = Logger.getLogger(HDFSOperationAction.class);
-	private FileStatus[] fileStatusArray;
+	private List<FileStatusBean> fileStatusArray;
 	private String savePath;
+	private List<File> listfilepathfreg;
 		
+	public List<File> getListfilepathfreg() {
+		return listfilepathfreg;
+	}
+	public void setListfilepathfreg(List<File> listfilepathfreg) {
+		this.listfilepathfreg = listfilepathfreg;
+	}
 	public String getListfilepath() {
 		return listfilepath;
 	}
@@ -133,9 +158,6 @@ public class HDFSOperationAction extends ActionSupport {
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}
-	
-	
-	
 	public String getRemoteFileName() {
 		return remoteFileName;
 	}
@@ -163,10 +185,10 @@ public class HDFSOperationAction extends ActionSupport {
 	public void setUploadFileName(String uploadFileName) {
 		this.uploadFileName = uploadFileName;
 	}
-	public FileStatus[] getFileStatusArray() {
+	public List<FileStatusBean> getFileStatusArray() {
 		return fileStatusArray;
 	}
-	public void setFileStatusArray(FileStatus[] fileStatusArray) {
+	public void setFileStatusArray(List<FileStatusBean> fileStatusArray) {
 		this.fileStatusArray = fileStatusArray;
 	}
 	public String setSavePath() throws Exception{
@@ -295,6 +317,12 @@ public class HDFSOperationAction extends ActionSupport {
 	public String listFileStatus(){
 		judgeRoot();
 		try {
+			this.listfilepathfreg = getFilePathFreg(listfilepath);
+			for(File path:this.listfilepathfreg){
+				System.out.println(path.getName());
+				System.out.println(path.getParent());
+			}
+			log.info("get file list status.[listfilepath:]"+listfilepath);
 			fileStatusArray = hdfsUtils.listFileStatus(hdfsUtils.getFileSystem(), listfilepath, isroot);
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -302,6 +330,45 @@ public class HDFSOperationAction extends ActionSupport {
 			return ERROR;
 		}
 		return SUCCESS;
+	}
+	/** 
+	* @Title: getFilePathFreg 
+	* @Description: TODO
+	* @param @return    设定文件 
+	* @return Object    返回类型 
+	* @throws 
+	*/
+	private List<File> getFilePathFreg(String path) {
+		//judgeRoot();
+		isroot = true;
+		if(path==null || path.trim().length()==0){
+			path="/";
+			System.out.println("input param is null.set to root:/");
+		}
+		if(!isroot){
+			path = hdfsUtils.getFileSystem().getWorkingDirectory().toString()+"/"+path;
+			System.out.println("not root.reset:"+path);
+		}
+		
+		System.out.println("caculated path:"+path);
+		File filePath = new File(path);
+		List<File> pathlist = new ArrayList<File>();
+
+		while(filePath.getParent()!=null){
+			System.out.println("add filepath:"+filePath.getPath());
+			pathlist.add(0,filePath);
+			filePath=new File(filePath.getParent());
+		}
+		System.out.println("<<<<<<<<,,hdfsaction:listfreg");
+		Iterator<File> it = pathlist.iterator();
+		while(it.hasNext()){
+			System.out.println(it.next().getName());
+		}
+		System.out.println(">>>>>>hdfs action down");
+		return pathlist;
+	}
+	public static void main(String[] args){
+		new HDFSOperationAction().getFilePathFreg("/home");
 	}
 
 }
