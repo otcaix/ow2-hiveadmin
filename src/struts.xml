@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!^-]*" />
+	<package name="default" extends="struts-default">
+		<action name="loginexample" class="exampleUserAction" method="login">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+	</package>
+	<package name="database" extends="struts-default" namespace="/databaseAction">
+		<action name="create" class="databaseAction" method="create">
+			<result name="success" type="redirectAction">getDatabaseList</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="getDatabaseList" class="databaseAction" method="getHiveDatabaseList">
+			<result name="success">/jsp/databaselist.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="deleteDatabase" class="databaseAction" method="deleteDatabase">
+			<result name="success" type="redirectAction">getDatabaseList</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+	</package>
+	<package name="userHistoryRecord" extends="struts-default"
+		namespace="/userHistory">
+		<action name="getUserHistoryRecordList" class="userHistoryRecordAction"
+			method="getUserHistoryRecordList">
+			<result name="success">/jsp/userhistorylist.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+	</package>
+	<package name="hdfsOperation" extends="struts-default"
+		namespace="/hdfsOperation">
+		<action name="mkdirs" class="HDFSOperationAction" method="mkdirs">
+			<result name="success" type="redirectAction">listFileStatus</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="deletedirs" class="HDFSOperationAction" method="deletedirs">
+			<result name="success" type="redirectAction">listFileStatus</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="mkfile" class="HDFSOperationAction" method="mkfile">
+			<result name="success" type="redirectAction">listFileStatus</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="deletefile" class="HDFSOperationAction" method="deletefile">
+			<result name="success" type="redirectAction">listFileStatus</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="uploadfile" class="HDFSOperationAction" method="uploadfile">
+			<result name="success" type="redirectAction">listFileStatus</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="downloadfile" class="HDFSOperationAction">
+
+			<result name="success" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">downloadfile</param>
+				<param name="contentDisposition">attachment;filename="${remoteFileName}"</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="error">errorexample.jsp</result>
+		</action>
+		<action name="renamefile" class="HDFSOperationAction" method="renamefile">
+			<result name="success" type="redirectAction">listFileStatus</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="listFileStatus" class="HDFSOperationAction"
+			method="listFileStatus">
+			<result name="success">/jsp/hdfsfilelist.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+	</package>
+	<package name="hiveSqlTemplate" extends="struts-default"
+		namespace="/hiveSqlTemplate">
+		<action name="createHiveSqlTemplate" class="hiveSqlTemplateAction"
+			method="createHiveSqlTemplate">
+			<result name="success" type="redirectAction">fetchHiveSqlTemplateList</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="deleteHiveSqlTemplate" class="hiveSqlTemplateAction"
+			method="deleteHiveSqlTemplate">
+			<result name="success" type="redirectAction">fetchHiveSqlTemplateList</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="updateHiveSqlTemplate" class="hiveSqlTemplateAction"
+			method="updateHiveSqlTemplate">
+			<result name="success" type="redirectAction">fetchHiveSqlTemplateList</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="fetchHiveSqlTemplate" class="hiveSqlTemplateAction"
+			method="fetchHiveSqlTemplate">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+
+		<action name="fetchHiveSqlTemplateList" class="hiveSqlTemplateAction"
+			method="fetchHiveSqlTemplateList">
+			<result name="success">/jsp/templatelist.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="executeHiveSqlTemplate" class="hiveSqlTemplateAction"
+			method="executeHiveSqlTemplate">
+			<result name="success">/jsp/hivethriftres.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+
+
+	</package>
+
+	<package name="hivecli" extends="struts-default" namespace="/hivecli">
+		<action name="hiveCliQuery" class="hiveCliAction" method="hiveCliQuery">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="getQueryStatus" class="hiveCliAction" method="getQueryStatus">
+			<result name="success">/loginexample.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="getResult" class="hiveCliAction" method="getResult">
+			<result name="success">/jsp/hivecliresultfilepreview.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="getDownLoadResultFile" class="hiveCliAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">downLoadResultFile</param>
+				<param name="contentDisposition">attachment;filename="${fingerPrint}.result"</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="error">errorexample.jsp</result>
+		</action>
+	</package>
+	<package name="table" extends="struts-default" namespace="/tableaction">
+		<action name="tablelist" class="hiveTableAction" method="showTable">
+			<result name="success">/jsp/tablelist.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="tabledetail" class="hiveTableAction" method="tableDetails">
+			<result name="success">/jsp/tabledetail.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="create" class="hiveTableAction" method="createTable">
+			<result name="success" type="redirectAction">tablelist</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="renametable" class="hiveTableAction" method="renameTable">
+			<result name="success" type="redirectAction">tablelist</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="droptable" class="hiveTableAction" method="dropTable">
+			<result name="success" type="redirectAction">tablelist</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="truncatetable" class="hiveTableAction" method="truncateTable">
+		<result name="success" type="redirectAction">tablelist</result>
+		<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="loadfileintotable" class="hiveTableAction" method="loadFileIntoTable">
+		<result name="success" type="redirectAction">showtabledata</result>
+		<result name="error"> /errorexample.jps</result>
+		</action>
+		<action name="showtabledata" class="hiveTableAction" method="selectFromTable">
+		<result name="success" >/jsp/tabledataform.jsp</result>
+		<result name="error"> /errorexample.jps</result>
+		</action>
+		<action name="addcolumns" class="hiveTableAction" method="addorReplacecolumn">
+		<result name="success" type="redirectAction">tabledetail</result>
+		<result name="error"> /errorexample.jps</result>
+		</action>
+		<action name="changecolumns" class="hiveTableAction" method="changeColumn">
+		<result name="success" type="redirectAction">tabledetail</result>
+		<result name="error"> /errorexample.jps</result>
+		</action>
+		<action name="cloneto" class="hiveTableAction" method="cloneTo">
+			<result name="success">/jsp/cloneto.jsp</result>
+			<result name="error">/errorexample.jsp</result>
+		</action>
+		<action name="clonetable" class="hiveTableAction" method="cloneTable">
+			<result name="success" type="redirectAction">tablelist</result>
+			<!-- <result name="input" >/jsp/cloneto.jsp</result>		 -->
+			<result name="error">/errorexample.jsp</result>
+		</action>
+	</package>
+</struts>

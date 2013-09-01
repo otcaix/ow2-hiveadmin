@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<context:annotation-config />
+
+	<context:component-scan base-package="*" />
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="classpath:com/hiveadmin/jdbc.properties" />
+	</bean>
+
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+	</bean>
+	
+	<bean id="hiveConnection" class="org.hiveadmin.hive.hiveutils.HiveConnectionBean">
+	    <property name="driverName" value="${jdbc.hive.driverClassName}"/>
+		<property name="url" value="${jdbc.hive.url}"/>
+		<property name="user" value="${jdbc.hive.username}"/>
+		<property name="password" value="${jdbc.hive.password}"/>
+	</bean>
+	<bean id="hdfsUtils" class="org.hiveadmin.hdfs.utils.HDFSUtils">
+	    <property name="ip" value="${hadoop.ip}"/>
+		<property name="port" value="${hadoop.port}"/>
+	</bean>
+	
+</beans>
