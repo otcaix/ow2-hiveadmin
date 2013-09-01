@@ -7,19 +7,18 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span> 
 				</a>
-				<a class="brand" href="index.html"> <img alt="Charisma Logo" src="img/hiveadmin-logo.png" /> <span>JSPHiveAdmin</span></a>
+				<a class="brand" style="font-family:georgia,serif;" href="index.jsp"> <img alt="HiveAdmin Logo" src="img/hiveadmin-logo.png" /> <span style="font-style:italic">Hive</span><span style="font-weight:bold">Admin</span></a>
 				
-					<div class="top-nav nav-collapse pull-right">
-					<br>
+				<div class="top-nav nav-collapse pull-right">
 					<ul class="nav">
 						<li><a href="#">Visit Site</a></li>
 					</ul>
 				</div>
 				
 				<!-- user dropdown starts -->
-				<div class="btn-group pull-right  " ><br>
+				<div class="btn-group pull-right  " >
 					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-						<i class="icon-user"></i><span class="hidden-phone"> admin</span>
+						<i class="icon-user"></i><span class="hidden-phone"> <%=session.getAttribute("user") %> </span>
 						<span class="caret"></span>
 					</a>
 					

@@ -162,7 +162,7 @@
 				
 			</div>
 		</div>
-
+	<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

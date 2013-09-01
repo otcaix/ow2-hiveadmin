@@ -80,7 +80,7 @@
 						<div class="box-header well">
 
 							<h2>
-								<i class="icon-info-sign"></i> Add Columns
+								<i class="icon-info-sign"></i> Alter Table
 							</h2>
 							<div class="box-icon">
 								<a href="#" class="btn btn-setting btn-round"><i
@@ -161,7 +161,7 @@
 				
 			</div>
 		</div>
-
+	<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

@@ -5,7 +5,8 @@
 <struts>
 	<constant name="struts.devMode" value="false" />
 	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!^-]*" />
-
+	<constant name="struts.ui.theme" value="simple"></constant>
+	
 	<package name="globalpkg" extends="struts-default">
 	<global-results>
 <result name="error">/errorpage.jsp</result>

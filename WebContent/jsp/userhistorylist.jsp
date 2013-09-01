@@ -67,7 +67,7 @@
                 <ul class="breadcrumb">
                      <li>
                          <a href=<%=request.getContextPath() %>>Home</a> <span class="divider">/</span>
-                         <a href="#">HDFS Files</a>
+                         <a href="#">User History</a>
                      </li>
                 </ul>
             </div>
@@ -75,7 +75,7 @@
 			<div class="row-fluid">
 				<div class="box span12">
 					<div class="box-header well">
-						<h2><i class="icon-info-sign"></i> HDFS files list</h2>
+						<h2><i class="icon-info-sign"></i> User History List</h2>
 						<div class="box-icon">
 							<a href="#" class="btn btn-setting btn-round"><i class="icon-cog"></i></a>
 							<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>
@@ -90,8 +90,8 @@
 								  <tr>
 									  <th>id</th>
 									  <th>operator</th>
-									  <th>description</th>
-									  <th>sql</th>
+									  <th width="20%">description</th>
+									  <th width="35%">sql</th>
 									  <th>timestamp</th>
 									  <th>actions</th>
 								  </tr>
@@ -108,13 +108,13 @@
 									<td class="centre">
 										<s:if test='resultfile != ""'>
 										
-											<a class="btn btn-danger" href=<%=request.getContextPath()+"/hivecli/getResult?fingerPrint="%><s:property value="resultfile"/>>
-												<i class="icon-trash icon-white"></i> 
-												check result
+											<a class="btn btn-primary" href=<%=request.getContextPath()+"/hivecli/getResult?fingerPrint="%><s:property value="resultfile"/>>
+												<i class="icon-trash icon-check"></i> 
+												check
 											</a>
 											<a class="btn btn-success" href=<%=request.getContextPath()+"/hivecli/getDownLoadResultFile?fingerPrint="%><s:property value="resultfile"/>>
-												<i class="icon-zoom-in icon-white"></i>  
-												download result                                          
+												<i class="icon-zoom-in icon-download-alt"></i>  
+												result                                          
 											</a>
 										</s:if>
 										
@@ -130,6 +130,7 @@
 	
 			</div>
 		</div>
+		<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

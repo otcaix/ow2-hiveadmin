@@ -67,7 +67,7 @@
                 <ul class="breadcrumb">
                      <li>
                          <a href=<%=request.getContextPath() %>>Home</a> <span class="divider">/</span>
-                         <a href="#">databases</a>
+                         <a href="#">tables</a>
                      </li>
                 </ul>
             </div>
@@ -113,6 +113,7 @@
 	   <div id="database" style="display:none"><s:property value="database_name" /></div> --%>
 			</div>
 		</div>
+		<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

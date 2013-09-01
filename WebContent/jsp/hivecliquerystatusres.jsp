@@ -68,7 +68,7 @@
                 <ul class="breadcrumb">
                      <li>
                          <a href=<%=request.getContextPath() %>>Home</a> <span class="divider">/</span>
-                         <a href="#">HDFS Files</a>
+                         <a href="#">Hive result</a>
                      </li>
                 </ul>
             </div>
@@ -76,7 +76,7 @@
 			<div id="temp_op_container" class="row-fluid">
 				<div class="box span12">
 					<div class="box-header well" data-original-title="">
-						<h2><i class="icon-edit"></i> create database form</h2>
+						<h2><i class="icon-edit"></i>hive result</h2>
 						<div class="box-icon">
 							<a href="#" class="btn btn-setting btn-round"><i class="icon-cog"></i></a>
 							<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>
@@ -99,6 +99,7 @@
 	
 			</div>
 		</div>
+		<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

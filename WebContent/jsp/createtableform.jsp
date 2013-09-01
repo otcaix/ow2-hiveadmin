@@ -80,7 +80,7 @@
 						<div class="box-header well">
 
 							<h2>
-								<i class="icon-info-sign"></i> Table list
+								<i class="icon-info-sign"></i> Table form
 							</h2>
 							<div class="box-icon">
 								<a href="#" class="btn btn-setting btn-round"><i
@@ -211,7 +211,7 @@
 				
 			</div>
 		</div>
-
+	<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

@@ -162,7 +162,7 @@
 	       <div id="database" style="display:none"><s:property value="database_name" /></div>
 			</div>
 		</div>
-		
+		<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

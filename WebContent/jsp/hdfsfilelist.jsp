@@ -174,11 +174,11 @@
 										<input class="hdfs_filepath" type="hidden" value="<s:property value="basePath"/>"/>
 										<button   class="hdfs_renamefile_btn btn btn-success">
 			
-											<i class="icon-zoom-in icon-white"></i>
+											<i class="icon-zoom-in icon-edit"></i>
 											Rename
 										</button>
-										<a class="btn btn-danger" href=<%=request.getContextPath()+"/hdfsOperation/downloadfile?remotepath="%><s:property value="path"/>>
-											<i class="icon-trash icon-white"></i> 
+										<a class="btn btn-primary" href=<%=request.getContextPath()+"/hdfsOperation/downloadfile?remotepath="%><s:property value="path"/>>
+											<i class="icon-trash icon-download-alt"></i> 
 											Download
 										</a>
 									
@@ -194,6 +194,7 @@
 	
 			</div>
 		</div>
+		<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

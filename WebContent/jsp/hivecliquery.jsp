@@ -88,7 +88,7 @@
                 <ul class="breadcrumb">
                      <li>
                          <a href=<%=request.getContextPath() %>>Home</a> <span class="divider">/</span>
-                         <a href="#">HDFS Files</a>
+                         <a href="#">Hive Cli</a>
                      </li>
                 </ul>
             </div>
@@ -96,7 +96,7 @@
 			<div id="temp_op_container" class="row-fluid">
 				<div class="box span12">
 					<div class="box-header well" data-original-title="">
-						<h2><i class="icon-edit"></i> create database form</h2>
+						<h2><i class="icon-edit"></i>Hive Cli console </h2>
 						<div class="box-icon">
 							<a href="#" class="btn btn-setting btn-round"><i class="icon-cog"></i></a>
 							<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>
@@ -136,9 +136,7 @@
 								<button id="hivecli_exe_btn" class="btn btn-primary" type="submit" onclick="hivecliquery()">
 									hive cli
 								</button>
-								<button class="btn btn-primary">
-									canceal
-								</button>
+								<input type="reset" class="btn btn-primary" value="reset">
 							</div>
 							</fieldset>
 						 </form>
@@ -149,6 +147,7 @@
 	
 			</div>
 		</div>
+		<jsp:include page="/jsp/foot.html" />
 	</div>
 	<!-- external javascript
 	================================================== -->

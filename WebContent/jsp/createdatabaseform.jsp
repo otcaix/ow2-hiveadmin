@@ -23,7 +23,7 @@
 			
 			<div class="form-actions">
 					<button class="btn btn-small btn-primary" type="submit"><i class="icon-ok icon-white"></i>Create </button>
-									<button class="btn">cancel</button>
+					<a href="<%=request.getContextPath() %>/databaseAction/getDatabaseList" class="btn">cancel</a>
 			</div>
 			</fieldset>
 		 </form>

@@ -265,6 +265,7 @@ public class HDFSOperationAction extends ActionSupport {
 	public String uploadfile(){
 		judgeRoot();
 		String tempFilePath = null;
+		log.info("=====before upload");
 		try {
 			//tempFilePath = getSavePath()+"/"+getUploadFileName();
 			String  tempUploadPath = ServletActionContext.getServletContext().getRealPath("/")+"/upload/";
@@ -280,6 +281,8 @@ public class HDFSOperationAction extends ActionSupport {
 			while((len=fis.read(buffer))>0){
 				fos.write(buffer, 0, len);
 			}
+			log.info("upload, tempFilePath:"+tempFilePath);
+			log.info("remotefilepath:"+remoteFileName);
 			hdfsUtils.upload(hdfsUtils.getFileSystem(), tempFilePath, remotepath,true,isroot);
 		} catch (Exception e) {
 		

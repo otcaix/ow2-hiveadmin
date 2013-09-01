@@ -12,13 +12,24 @@
 	</div>
 	<div class="box-content">
 		
-		<s:form action="uploadfile" namespace="/hdfsOperation" enctype="multipart/form-data">
-		  	<s:file name="upload" label="choose file"/><br/>
-	
-			<s:textfield name="remotepath" label="hdfs path"/>
+		<s:form theme="simple" action="uploadfile" namespace="/hdfsOperation" enctype="multipart/form-data">
+		  	<div class="control-group">
+		  		<label class="control-lable">FilePath</label>
+		  		<div class="controls">
+		  			<s:file name="upload"/>
+		  		</div>
+		  	</div>
+		  	<div class="control-group">
+				<label class="control-lable">HDFS Path</label>
+				<div class="contorls">
+					<s:textfield name="remotepath"/>
+				</div>
+			</div>
 
 			<s:submit class="btn btn-primary" value="upload"/>
 
 		</s:form>
+		
+		
 	</div>
 </div>
