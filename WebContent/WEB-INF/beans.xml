@@ -13,7 +13,7 @@
 	<context:component-scan base-package="*" />
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations" value="classpath:com/hiveadmin/jdbc.properties" />
+		<property name="locations" value="/WEB-INF/jdbc.properties" />
 	</bean>
 
 	
