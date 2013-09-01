@@ -267,7 +267,12 @@ public class HDFSOperationAction extends ActionSupport {
 		String tempFilePath = null;
 		try {
 			//tempFilePath = getSavePath()+"/"+getUploadFileName();
-			tempFilePath = ServletActionContext.getServletContext().getRealPath("/")+"/upload/"+getUploadFileName();
+			String  tempUploadPath = ServletActionContext.getServletContext().getRealPath("/")+"/upload/";
+			File file = new File(tempUploadPath);
+			if(!file.exists()){
+				file.mkdirs();
+			}
+			tempFilePath = tempUploadPath +"/"+getUploadFileName();
 			FileOutputStream fos = new FileOutputStream(tempFilePath);
 			FileInputStream fis = new FileInputStream(getUpload());
 			byte[] buffer = new byte[1024];
