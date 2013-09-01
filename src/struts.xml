@@ -3,10 +3,26 @@
     "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
     "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
-	<constant name="struts.devMode" value="true" />
+	<constant name="struts.devMode" value="false" />
 	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!^-]*" />
 
-	<package name="database" extends="struts-default" namespace="/databaseAction">
+	<package name="globalpkg" extends="struts-default">
+	<global-results>
+<result name="error">/errorpage.jsp</result>
+</global-results>
+<global-exception-mappings>
+  <exception-mapping result="error" exception="java.lang.NullPointerException">
+</exception-mapping>
+<exception-mapping result="error" exception="java.lang.NoSuchMethodException">
+</exception-mapping>
+<exception-mapping result="error" exception="java.lang.Exception">
+</exception-mapping>
+</global-exception-mappings>
+</package>
+
+	
+	
+	<package name="database" extends="globalpkg" namespace="/databaseAction">
 		<action name="create" class="databaseAction" method="create">
 			<result name="success" type="redirectAction">getDatabaseList</result>
 			<result name="error">/errorpage.jsp</result>
@@ -20,7 +36,7 @@
 			<result name="error">/errorpage.jsp</result>
 		</action>
 	</package>
-	<package name="userHistoryRecord" extends="struts-default"
+	<package name="userHistoryRecord" extends="globalpkg"
 		namespace="/userHistory">
 		<action name="getUserHistoryRecordList" class="userHistoryRecordAction"
 			method="getUserHistoryRecordList">
@@ -28,7 +44,7 @@
 			<result name="error">/errorpage.jsp</result>
 		</action>
 	</package>
-	<package name="hdfsOperation" extends="struts-default"
+	<package name="hdfsOperation" extends="globalpkg"
 		namespace="/hdfsOperation">
 		<action name="mkdirs" class="HDFSOperationAction" method="mkdirs">
 			<result name="success" type="redirectAction">listFileStatus</result>
@@ -70,7 +86,7 @@
 			<result name="error">/errorpage.jsp</result>
 		</action>
 	</package>
-	<package name="hiveSqlTemplate" extends="struts-default"
+	<package name="hiveSqlTemplate" extends="globalpkg"
 		namespace="/hiveSqlTemplate">
 		<action name="createHiveSqlTemplate" class="hiveSqlTemplateAction"
 			method="createHiveSqlTemplate">
@@ -107,7 +123,7 @@
 
 	</package>
 
-	<package name="hivecli" extends="struts-default" namespace="/hivecli">
+	<package name="hivecli" extends="globalpkg" namespace="/hivecli">
 		<action name="hiveCliQuery" class="hiveCliAction" method="hiveCliQuery">
 			<result name="success">/loginexample.jsp</result>
 			<result name="error">/errorpage.jsp</result>
@@ -130,7 +146,7 @@
 			<result name="error">/errorpage.jsp</result>
 		</action>
 	</package>
-	<package name="table" extends="struts-default" namespace="/tableaction">
+	<package name="table" extends="globalpkg" namespace="/tableaction">
 		<action name="tablelist" class="hiveTableAction" method="showTable">
 			<result name="success">/jsp/tablelist.jsp</result>
 			<result name="error">/errorpage.jsp</result>
