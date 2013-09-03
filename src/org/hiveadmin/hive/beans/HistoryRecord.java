@@ -12,22 +12,49 @@ package org.hiveadmin.hive.beans;
 import java.sql.Timestamp;
 
 /**
- * @ClassName HistoryRecord
+ * This class is to describe the history record of operation.
  * @Description TODO
  * @author wangjie wangjie370124@163.com
  * @date Jul 19, 2013 8:41:27 PM
  */
 public class HistoryRecord {
 	
+	/**           
+	 * op_record_id:this property is the id of this operation         
+	 */
 	private int op_record_id;
+	/**           
+	 * op_user_name:this property is the name of user who operate        
+	 */
 	private String op_user_name;
+	/**           
+	 * op_desc:this property is the description about this operation        
+	 */
 	private String op_desc;
+	/**           
+	 * op_sql:this property is the SQL sentence    
+	 */
 	private String op_sql;
+	/**           
+	 * op_res:this property is the result status        
+	 */
 	private boolean op_res;
+	/**           
+	 * op_ts:this property is the time of this operation occur        
+	 */
 	private Timestamp op_ts;
+	/**           
+	 * status:this property is status of operation          
+	 */
 	private String status;
+	/**           
+	 * resultfile:this property is the file which contains the result         
+	 */	
 	private String resultfile;
 	
+	 /** 
+	  * This method is to create an object of HistoryRecord
+	  */
 	public HistoryRecord(){
 		this.op_user_name="";
 		this.op_desc="";

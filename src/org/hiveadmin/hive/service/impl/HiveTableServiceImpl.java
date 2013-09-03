@@ -1,45 +1,96 @@
+/**  
+ * @Project: javaHiveAdimin
+ * @Title: HiveTableServiceImpl.java
+ * @Package org.hiveadmin.hive.service.impl
+ * @author xuliang,xuliang12@octaix.iscas.ac.cn
+ * @Copyright: 2013 www.1000chi.comInc. All rights reserved.
+ * @version V1.0  
+ */
 package org.hiveadmin.hive.service.impl;
 
 import org.hiveadmin.hive.hiveutils.HiveConnectionBean;
-
-import java.sql.Connection;
+import org.hiveadmin.hive.service.HiveTableService;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
-//import org.hiveadmin.hive.service.HiveTableService;
-
 import org.apache.struts2.ServletActionContext;
 import org.hiveadmin.hive.beans.Columns;
 import org.hiveadmin.hive.beans.HistoryRecord;
-import org.hiveadmin.hive.beans.Partition;
 import org.hiveadmin.hive.dao.impl.UserHistoryLog;
 import org.springframework.stereotype.Component;
 
+/**
+ * HiveTableServiceImpl is created to describe the operations on the hive table.
+ * HiveTableServiceImpl implements the basic function bout the operation on the
+ * table
+ * <p>
+ * 
+ * @author xuliang,xuliang12@octaix.iscas.ac.cn
+ */
+
 @Component
-public class HiveTableServiceImpl {
+public class HiveTableServiceImpl implements HiveTableService {
+	/**
+	 * log:this property is to output the records of operation
+	 */
 	private Logger log = Logger.getLogger(this.getClass());
+	/**
+	 * userHistoryLog:this property is to push the records about user into the
+	 * database
+	 */
 	private UserHistoryLog userHistoryLog = new UserHistoryLog();
+
+	/**
+	 * getUserHistoryLog is the method to return the UserHistoryLog object
+	 * 
+	 * @return UserHistoryLog
+	 */
 
 	public UserHistoryLog getUserHistoryLog() {
 		return userHistoryLog;
 	}
 
+	/**
+	 * setUserHistoryLog is the method to reset the UserHistoryLog property
+	 * 
+	 * @param userHistoryLog
+	 */
 	@Resource
 	public void setUserHistoryLog(UserHistoryLog userHistoryLog) {
 		this.userHistoryLog = userHistoryLog;
 	}
 
+	 /**
+	  *createTables 
+	  * @param external
+	  * @param if_not_exists
+	  * @param database_name
+	  * @param table_name
+	  * @param columns
+	  * @param table_comment
+	  * @param P_columns
+	  * @param cluser_cols_name
+	  * @param clu_sorted_cols
+	  * @param num_buckets
+	  * @param skewed_col_names
+	  * @param skewed_col_values
+	  * @param row_format_value
+	  * @param file_format
+	  * @param row_sorted_by_cols
+	  * @param hdfs_path
+	  * @param tblproperties_spec
+	  * @param select_statement
+	  * @param exist_table_or_view_name
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#createTables(boolean, boolean, java.lang.String, java.lang.String, java.util.List, java.lang.String, java.util.List, java.util.List, java.util.List, java.lang.String, java.util.List, java.util.List, java.lang.String, java.lang.String, java.util.List, java.lang.String, java.lang.String, java.util.List, java.lang.String, java.lang.String)
+	  */
+	@Override
 	public void createTables(boolean external, boolean if_not_exists,
 			String database_name, String table_name, List<Columns> columns,
 			String table_comment, List<Columns> P_columns,
@@ -47,8 +98,8 @@ public class HiveTableServiceImpl {
 			String num_buckets, List<String> skewed_col_names,
 			List<String> skewed_col_values, String row_format_value,
 			String file_format, List<Columns> row_sorted_by_cols,
-			String with_serdepropertiles_value, String hdfs_path,
-			List<Partition> tblproperties_spec, String select_statement,
+			String hdfs_path,
+		    String select_statement,
 			String exist_table_or_view_name) throws Exception {
 		String sql = "create ";
 		if (external) {
@@ -148,7 +199,7 @@ public class HiveTableServiceImpl {
 			sql = sql + " ) ";
 
 		}
-	
+
 		if (!(exist_table_or_view_name == null || exist_table_or_view_name
 				.equals(""))) {
 			sql = sql + " like " + exist_table_or_view_name;
@@ -158,8 +209,6 @@ public class HiveTableServiceImpl {
 			sql = sql + " location " + hdfs_path;
 
 		}
-
-	
 
 		System.out.println(sql);
 		Statement stmt = HiveConnectionBean.getStmt();
@@ -185,16 +234,14 @@ public class HiveTableServiceImpl {
 
 	}
 
-	/**
-	 * @param table_name
-	 *            :要删除的表名
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
-	 * @throws Exception
-	 *             DROP TABLE [IF EXISTS] table_name
-	 */
-
-
+	 /**
+	  *dropTable 
+	  * @param table_name
+	  * @param database_name
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#dropTable(java.lang.String, java.lang.String)
+	  */
+	@Override
 	public void dropTable(String table_name, String database_name)
 			throws Exception {
 		Statement stmt = HiveConnectionBean.getStmt();
@@ -219,13 +266,15 @@ public class HiveTableServiceImpl {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.hiveadmin.hive.service.HiveTableService#truncateTable(com.hiveadmin
-	 * .hive.forms.truncateTableForm)
-	 */
+	 /**
+	  *truncateTable 
+	  * @param table_name
+	  * @param partition_spec
+	  * @param database_name
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#truncateTable(java.lang.String, java.util.List, java.lang.String)
+	  */
+	@Override
 	public void truncateTable(String table_name, List<Columns> partition_spec,
 			String database_name) throws Exception {
 		Statement stmt = HiveConnectionBean.getStmt();
@@ -259,145 +308,30 @@ public class HiveTableServiceImpl {
 		HistoryRecord historyRecord = new HistoryRecord();
 		historyRecord.setOp_user_name((String) ServletActionContext
 				.getContext().getSession().get("user"));
-		historyRecord.setOp_desc("truncate Table:" + table_name + " in database:"
-				+ database_name);
+		historyRecord.setOp_desc("truncate Table:" + table_name
+				+ " in database:" + database_name);
 		historyRecord.setOp_res(true);
 		historyRecord.setOp_sql(sql);
 		userHistoryLog.addHistotyRecord(historyRecord);
-	
+
 		stmt.close();
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.hiveadmin.hive.service.HiveTableService#addPartitions(com.hiveadmin
-	 * .hive.forms.AddPartitionForm)
-	 */
-	public void addPartitions(String table_name, boolean if_not_exists,
-			List<Partition> partition_spec_location) throws Exception {
-
-		String sql = "alter table " + table_name + " add ";
-		if (if_not_exists) {
-			sql = sql + " if not exists ";
-		}
-
-		Iterator<Partition> P_entries = partition_spec_location.iterator();
-
-		while (P_entries.hasNext()) {
-			sql = sql + " partition (";
-			Partition p_partition = P_entries.next();
-
-			Iterator<Columns> p_spec = p_partition.getPartition_spec()
-					.iterator();
-
-			String location = p_partition.getLocation();
-			while (p_spec.hasNext()) {
-				Columns P_spec_entry = (Columns) p_spec.next();
-				sql = sql + P_spec_entry.getCols_name() + "= '"
-						+ P_spec_entry.getCols_type();
-				if (p_spec.hasNext()) {
-					sql = sql + "' , ";
-				}
-			}
-			sql = sql + "') ";
-			if (!(location == null || location.equals(""))) {
-				sql = sql + " location '" + location + "' ";
-
-			}
-
-		}
-
-		
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param table_name
-	 * @return
-	 * @throws Exception
-	 */
-	public void recoverPartitions(String table_name) throws Exception {
-		if (table_name.equals("") || table_name == null) {
-			log.error("Recover partition error: Table name is null!");
-
-		}
-		String sql = "alter table " + table_name + " recover partitions";
-
-		
-		  log.error("Recover partition error: Fail to excute :" + sql); 
-		 log.info("Success to Recover partition");
-		
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param drop_partition
-	 * @return
-	 * @throws Exception
-	 */
-	public void dropPartition(String table_name, boolean if_exists,
-			List<Partition> partition_spec, boolean ignore_protection)
-			throws Exception {
-
-		if (table_name == null || table_name.equals("")) {
-			log.error("Drop partition error: Table name is null");
-			// throw new Exception("Drop partition error: Table name is null");
-		}
-		String sql = "alter table " + table_name + " drop ";
-		if (if_exists) {
-			sql = sql + " if exists ";
-		}
-
-		Iterator<Partition> p_entries = partition_spec.iterator();
-		while (p_entries.hasNext()) {
-			Iterator<Columns> sp_entries = p_entries.next().getPartition_spec()
-					.iterator();
-
-			sql = sql + " partition (";
-			while (sp_entries.hasNext()) {
-				Columns p_entry = (Columns) sp_entries.next();
-				sql = sql + p_entry.getCols_name() + " = '"
-						+ p_entry.getCols_type();
-				if (sp_entries.hasNext()) {
-					sql = sql + "', ";
-				}
-
-			}
-			sql = sql + "') ";
-
-		}
-		if (ignore_protection) {
-			sql = sql + "ignore protection";
-		}
-		
-	
-		 log.error("Drop partition error: Fail to excute :" + sql); // throw
-		  new Exception("Drop partition error: Fail to excute :" + sql); 
-		  log.info("Success to drop partition");
-		 
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param old_name
-	 * @param new_name
-	 * @return
-	 * @throws Exception
-	 */
+	 /**
+	  *renameTable 
+	  * @param old_name
+	  * @param new_name
+	  * @param database_name
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#renameTable(java.lang.String, java.lang.String, java.lang.String)
+	  */
+	@Override
 	public void renameTable(String old_name, String new_name,
 			String database_name) throws Exception {
 		String sql = "alter table " + old_name + " rename to " + new_name;
-
 		Statement stmt = HiveConnectionBean.getStmt();
 		stmt.execute("use " + database_name);
-
-		System.out.println(sql);
 		boolean res = stmt.execute(sql);
 		if (!res) {
 			log.error("Rename table name error:  Fail to excute :" + sql);
@@ -414,15 +348,24 @@ public class HiveTableServiceImpl {
 		historyRecord.setOp_res(true);
 		userHistoryLog.addHistotyRecord(historyRecord);
 		stmt.close();
-		// System.out.println(sql);
 
 	}
 
-	/**
-	 * @param change_col_form
-	 * @return
-	 * @throws Exception
-	 */
+	 /**
+	  *changeColumn 
+	  * @param table_name
+	  * @param has_column
+	  * @param col_old_name
+	  * @param col_new_name
+	  * @param col_type
+	  * @param col_comment
+	  * @param first_or_after
+	  * @param after_col_name
+	  * @param database_name
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#changeColumn(java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)
+	  */
+	@Override
 	public void changeColumn(String table_name, boolean has_column,
 			String col_old_name, String col_new_name, String col_type,
 			String col_comment, int first_or_after, String after_col_name,
@@ -450,7 +393,7 @@ public class HiveTableServiceImpl {
 		}
 		Statement stmt = HiveConnectionBean.getStmt();
 		stmt.execute("use " + database_name);
-		System.out.println(sql);
+
 		boolean res = stmt.execute(sql);
 		if (!res) {
 			log.error("Change Column error:Fail to excute :" + sql);
@@ -469,11 +412,16 @@ public class HiveTableServiceImpl {
 
 	}
 
-	/**
-	 * @param add_col_form
-	 * @return
-	 * @throws Exception
-	 */
+	 /**
+	  *addorReplacecolumn 
+	  * @param replace_or_add
+	  * @param table_name
+	  * @param columns
+	  * @param database_name
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#addorReplacecolumn(boolean, java.lang.String, java.util.List, java.lang.String)
+	  */
+	@Override
 	public void addorReplacecolumn(boolean replace_or_add, String table_name,
 			List<Columns> columns, String database_name) throws Exception {
 
@@ -495,7 +443,7 @@ public class HiveTableServiceImpl {
 		sql = sql + " )";
 		Statement stmt = HiveConnectionBean.getStmt();
 		stmt.execute("use " + database_name);
-		System.out.println(sql);
+
 		boolean res = stmt.execute(sql);
 		if (!res) {
 			log.error("add/replace columnserror:Fail to excute :" + sql);
@@ -504,7 +452,7 @@ public class HiveTableServiceImpl {
 		HistoryRecord historyRecord = new HistoryRecord();
 		historyRecord.setOp_user_name((String) ServletActionContext
 				.getContext().getSession().get("user"));
-		historyRecord.setOp_desc("add columns to table:"+table_name );
+		historyRecord.setOp_desc("add columns to table:" + table_name);
 		historyRecord.setOp_res(true);
 		historyRecord.setOp_sql(sql);
 		userHistoryLog.addHistotyRecord(historyRecord);
@@ -513,330 +461,15 @@ public class HiveTableServiceImpl {
 
 	}
 
-	/**
-	 * @param table_properties_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void alterTbaleProperties(String table_name,
-			List<Columns> table_properties, String database_name)
-			throws Exception {
-
-		String sql = "alter table " + table_name + " set tblproperties ( ";
-		Iterator<Columns> p_entries = table_properties.iterator();
-		while (p_entries.hasNext()) {
-			Columns p_entry = (Columns) p_entries.next();
-			sql = sql + p_entry.getCols_name() + " = '"
-					+ p_entry.getCols_type();
-			if (p_entries.hasNext()) {
-				sql = sql + "', ";
-			}
-
-		}
-		sql = sql + "')";
-		Statement stmt = HiveConnectionBean.getStmt();
-		stmt.execute("use " + database_name);
-
-		System.out.println(sql);
-		boolean res = stmt.execute(sql);
-		if (!res) {
-			log.error("Rename table name error:  Fail to excute :" + sql);
-
-		}
-
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param add_serde_properties_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void addSerdeProperties(String table_name, String serde_class_name,
-			List<Columns> serde_properties) throws Exception {
-
-		String sql;
-		sql = "alter table " + table_name + "set ";
-		if (!(serde_class_name == null || serde_class_name.equals(""))) {
-			sql = sql + " serde " + serde_class_name;
-			if (!serde_properties.isEmpty()) {
-				sql = sql + " with serdeproperties ('";
-				Iterator<Columns> p_entries = serde_properties.iterator();
-				while (p_entries.hasNext()) {
-					Columns p_entry = (Columns) p_entries.next();
-					sql = sql + p_entry.getCols_name() + "' = '"
-							+ p_entry.getCols_type();
-					if (p_entries.hasNext()) {
-						sql = sql + "' , '";
-					}
-				}
-				sql = sql + "')";
-			}
-		} else {
-			sql = sql + " serdeproperties ('";
-			Iterator<Columns> p_entries = serde_properties.iterator();
-			while (p_entries.hasNext()) {
-				Columns p_entry = (Columns) p_entries.next();
-				sql = sql + p_entry.getCols_name() + "' = '"
-						+ p_entry.getCols_type();
-				if (p_entries.hasNext()) {
-					sql = sql + "' , '";
-				}
-			}
-			sql = sql + "')";
-		}
-		 log.error("Add serde properties:Fail to excute :" + sql);
-		 
-		  log.info("Sucess to add serde properties");
-		
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param table_or_partition_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void alterTableorPartitonFormat(String table_name,
-			List<Columns> partition_spec, String file_format) throws Exception {
-		String sql = "alter table " + table_name + " ";
-		if (!partition_spec.isEmpty()) {
-			sql = sql + " partition (";
-			Iterator<Columns> p_entries = partition_spec.iterator();
-			while (p_entries.hasNext()) {
-				Columns p_entry = p_entries.next();
-				sql = sql + p_entry.getCols_name() + " = '"
-						+ p_entry.getCols_type();
-				if (p_entries.hasNext()) {
-					sql = sql + "' , ";
-				}
-			}
-			sql = sql + "') ";
-
-		}
-		sql = sql + "set fileformat " + file_format;
-		 log.error("Alter Table/Partition file format :Fail to excute :" +
-		 sql); log.info("Sucess to alter Table/Partition file format");
-		 
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param table_storage_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void alterTableStorageProperties(String table_name,
-			List<String> clustered_col_names, List<String> sorted_col_names,
-			String num_buckets) throws Exception {
-		String sql = "alter table " + table_name + " clustered by ( ";
-
-		Iterator<String> pc_entries = clustered_col_names.iterator();
-		while (pc_entries.hasNext()) {
-			String pc_entry = pc_entries.next();
-			sql = sql + pc_entry;
-			if (pc_entries.hasNext()) {
-				sql = sql + " , ";
-			}
-		}
-		sql = sql + ") ";
-		if (!sorted_col_names.isEmpty()) {
-			sql = sql + " sorted by (";
-			Iterator<String> ps_entries = sorted_col_names.iterator();
-			while (ps_entries.hasNext()) {
-				String ps_entry = ps_entries.next();
-				sql = sql + ps_entry;
-				if (ps_entries.hasNext()) {
-					sql = sql + " , ";
-				}
-			}
-			sql = sql + ") ";
-		}
-		sql = sql + " into " + num_buckets + " buckets";
-
-		
-		  log.error("Alter Table storage properties:Fail to excute :" + sql);
-		 log.info("Sucess to alter  Table storage properties");
-		 
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param table_or_partition_loc_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void alterTableorPartitionLocation(String table_name,
-			List<Columns> partition_spec, String location) throws Exception {
-		String sql = "alter table " + table_name + " ";
-		if (!partition_spec.isEmpty()) {
-			sql = sql + " partition (";
-
-			Iterator<Columns> p_entries = partition_spec.iterator();
-			while (p_entries.hasNext()) {
-				Columns p_entry = p_entries.next();
-				sql = sql + p_entry.getCols_name() + " = '"
-						+ p_entry.getCols_type();
-				if (p_entries.hasNext()) {
-					sql = sql + "' , ";
-				}
-			}
-			sql = sql + "') ";
-		}
-		sql = sql + "set location  " + location;
-		log.error("Alter table or propertiesc location:Fail to excute :" +
-		 sql);  log.info("Sucess to alter  table or propertiesc location");
-		 
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param table_touce_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void alterTableTouch(String table_name, List<Columns> partition_spec)
-			throws Exception {
-		String sql = "alter table " + table_name + " touch ";
-		if (!partition_spec.isEmpty()) {
-			sql = sql + " partition (";
-
-			Iterator<Columns> p_entries = partition_spec.iterator();
-			while (p_entries.hasNext()) {
-				Columns p_entry = p_entries.next();
-				sql = sql + p_entry.getCols_name() + " = '"
-						+ p_entry.getCols_type();
-				if (p_entries.hasNext()) {
-					sql = sql + "' , ";
-				}
-			}
-			sql = sql + "') ";
-		}
-		
-		  log.error("Alter table touch:Fail to excute :" + sql);
-		 log.info("Sucess to alter  table touch");
-		 
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param table_unorArchive_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void alterTableUnorArchive(boolean archive_or_unarchive,
-			String table_name, List<Columns> partition_spec) throws Exception {
-
-		String sql = "alter table " + table_name;
-		if (archive_or_unarchive) {
-			sql = sql + " archive partition (";
-		} else {
-			sql = sql + " unarchive partition (";
-		}
-		Iterator<Columns> p_entries = partition_spec.iterator();
-		while (p_entries.hasNext()) {
-			Columns p_entry = p_entries.next();
-			sql = sql + p_entry.getCols_name() + " = '"
-					+ p_entry.getCols_type();
-			if (p_entries.hasNext()) {
-				sql = sql + "' , ";
-			}
-		}
-		sql = sql + "') ";
-
-		 log.error("Alter table (Un)Archive:Fail to excute :" + sql);
-		  log.info("Sucess to alter  table (Un)Archive");
-		
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param table_or_parttition_protection_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void alterTableorPartitionProtections(String table_name,
-			List<Columns> partition_spec, boolean en_or_disable,
-			boolean nodrop_or_offline) throws Exception {
-		String sql = "alter table " + table_name;
-		if (!partition_spec.isEmpty()) {
-			sql = sql + " partition (";
-
-			Iterator<Columns> p_entries = partition_spec.iterator();
-			while (p_entries.hasNext()) {
-				Columns p_entry = p_entries.next();
-				sql = sql + p_entry.getCols_name() + " = '"
-						+ p_entry.getCols_type();
-				if (p_entries.hasNext()) {
-					sql = sql + "' , ";
-				}
-			}
-			sql = sql + "') ";
-		}
-		if (en_or_disable) {
-			sql = sql + " enable ";
-		} else {
-			sql = sql + " disable ";
-		}
-		if (nodrop_or_offline) {
-			sql = sql + " NO_DROP";
-		} else {
-			sql = sql + " OFFLINE";
-		}
-		 log.error
-		  ("Alter table or Partition protection error:Fail to excute :" + sql);
-	log.info("Sucess to alter  table or Partition protection");
-		 
-		System.out.println(sql);
-
-	}
-
-	/**
-	 * @param table_rename_partition_form
-	 * @return
-	 * @throws Exception
-	 */
-	public void alterTableRenamePartition(String table_name,
-			List<Columns> old_partition_spec, List<Columns> new_partition_spec)
-			throws Exception {
-		String sql = "alter table " + table_name + " partition (";
-		Iterator<Columns> p_old_entries = old_partition_spec.iterator();
-		while (p_old_entries.hasNext()) {
-			Columns p_old_entry = p_old_entries.next();
-			sql = sql + p_old_entry.getCols_name() + " = '"
-					+ p_old_entry.getCols_type();
-			if (p_old_entries.hasNext()) {
-				sql = sql + "' , ";
-			}
-		}
-		sql = sql + "') rename to partition (";
-
-		Iterator<Columns> p_new_entries = new_partition_spec.iterator();
-		while (p_new_entries.hasNext()) {
-			Columns p_new_entry = p_new_entries.next();
-			sql = sql + p_new_entry.getCols_name() + " = '"
-					+ p_new_entry.getCols_type();
-			if (p_new_entries.hasNext()) {
-				sql = sql + "' , ";
-			}
-		}
-		sql = sql + "') ";
-
-	
-		 log.error("Alter table rename partion error:Fail to excute :" + sql);
-		 log.info("Sucess to alter table rename partion");
-		 
-		System.out.println(sql);
-
-	}
-
+	 /**
+	  *describeTable 
+	  * @param table_name
+	  * @param database_name
+	  * @return
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#describeTable(java.lang.String, java.lang.String)
+	  */
+	@Override
 	public List<Columns> describeTable(String table_name, String database_name)
 			throws Exception {
 		String sql = "describe " + table_name;
@@ -844,9 +477,7 @@ public class HiveTableServiceImpl {
 		if (database_name == null || database_name.equals("")) {
 			stmt.execute("use default");
 		} else {
-
 			stmt.execute("use " + database_name);
-
 		}
 		ResultSet res = stmt.executeQuery(sql);
 		List<Columns> tableDetails = new ArrayList<Columns>();
@@ -873,10 +504,14 @@ public class HiveTableServiceImpl {
 		return tableDetails;
 	}
 
-	/**
-	 * @return
-	 * @throws Exception
-	 */
+	 /**
+	  *showTable 
+	  * @param database_name
+	  * @return
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#showTable(java.lang.String)
+	  */
+	@Override
 	public List<String> showTable(String database_name) throws Exception {
 		Statement stmt = HiveConnectionBean.getStmt();
 		if (database_name == null || database_name.equals("")) {
@@ -907,172 +542,17 @@ public class HiveTableServiceImpl {
 		return tablelist;
 	}
 
-	/**
-	 * @param identifer
-	 * @return
-	 * @throws Exception
-	 */
-	public List<String> showTable(String identifier, String database_name)
-			throws Exception {
-		Statement stmt = HiveConnectionBean.getStmt();
-		if (!(database_name == null || database_name.equals(""))) {
-			stmt.execute("use " + database_name);
-		} else {
-			stmt.execute("use default");
-		}
-		String sql = "show tables (\"" + identifier + "\")";
-		ResultSet res = null;
-
-		res = stmt.executeQuery(sql);
-		List<String> tablelist = new ArrayList<String>();
-		while (res.next()) {
-			tablelist.add(res.getString(1));
-		}
-		HistoryRecord historyRecord = new HistoryRecord();
-		historyRecord.setOp_user_name((String) ServletActionContext
-				.getContext().getSession().get("user"));
-		historyRecord.setOp_desc("Show  tabless  in database:" + database_name);
-		historyRecord.setOp_res(true);
-		historyRecord.setOp_sql(sql);
-		userHistoryLog.addHistotyRecord(historyRecord);
-		log.info("Sucess to excute:" + sql);
-		res.close();
-		stmt.close();
-		System.out.println(sql);
-		return tablelist;
-	}
-
-	/**
-	 * @param table_name
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultSet showTableProperties(String table_name) throws Exception {
-		String sql = "show tblproperties " + table_name;
-		ResultSet res = null;
-		 log.info("Sucess to excute:" + sql);
-		 
-		System.out.println(sql);
-		return res;
-	}
-
-	/**
-	 * @param table_name
-	 * @param identifer
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultSet ShowTableProperties(String table_name, String identifier)
-			throws Exception {
-		String sql = "show tblproperties " + table_name + " (\"" + identifier
-				+ "\")";
-		ResultSet res = null;
-		 log.info("Sucess to excute:" + sql);
-		 
-		System.out.println(sql);
-		return res;
-	}
-
-	/**
-	 * @param show_partition_form
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultSet showPartitions(String table_name,
-			List<Columns> partition_spec) throws Exception {
-		String sql = "show partitions " + table_name + " ";
-		if (!partition_spec.isEmpty()) {
-			sql = sql + "partition (";
-			Iterator<Columns> p_entries = partition_spec.iterator();
-			while (p_entries.hasNext()) {
-				Columns p_entry = p_entries.next();
-				sql = sql + p_entry.getCols_name() + "='"
-						+ p_entry.getCols_type();
-				if (p_entries.hasNext()) {
-					sql = sql + "' , ";
-				}
-
-			}
-			sql = sql + "')";
-
-		}
-		ResultSet res = null;
-		 log.info("Sucess to excute:" + sql);
-		 
-		System.out.println(sql);
-		return res;
-
-	}
-
-	/**
-	 * @param show_taborpart_extend_form
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultSet showTablePartitionExtended(String database_name,
-			boolean in_or_from, String identifier, List<Columns> partition_spec)
-			throws Exception {
-		String sql = "show table extended ";
-		if (!(database_name == null || database_name.equals(""))) {
-			if (in_or_from) {
-				sql = sql + " in ";
-			} else {
-				sql = sql + " out ";
-			}
-			sql = sql + database_name;
-
-		}
-		sql = sql + " like \"" + identifier + "\" ";
-		if (!partition_spec.isEmpty()) {
-			sql = sql + " partition (";
-			Iterator<Columns> p_entries = partition_spec.iterator();
-			while (p_entries.hasNext()) {
-				Columns p_entry = p_entries.next();
-				sql = sql + p_entry.getCols_name() + "='"
-						+ p_entry.getCols_type();
-				if (p_entries.hasNext()) {
-					sql = sql + "' , ";
-				}
-
-			}
-			sql = sql + "')";
-
-		}
-		ResultSet res = null;
-		log.info("Sucess to excute:" + sql);
-		
-		System.out.println(sql);
-		return res;
-
-	}
-
-	/**
-	 * @param show_create_table_form
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultSet showCreateTable(String table_or_view_name,
-			String database_name) throws Exception {
-		String sql = "show create table ";
-
-		if (!(database_name == null || database_name.equals(""))) {
-			sql = sql + database_name + ".";
-		}
-
-		sql = sql + table_or_view_name;
-
-		ResultSet res = null;
-		 log.info("Sucess to excute:" + sql);
-		 
-		System.out.println(sql);
-		return res;
-	}
-
-	/**
-	 * @param columns_form
-	 * @return
-	 * @throws Exception
-	 */
+	 /**
+	  *showColumns 
+	  * @param tb_in_or_from
+	  * @param table_name
+	  * @param database_name
+	  * @param db_in_or_from
+	  * @return
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#showColumns(boolean, java.lang.String, java.lang.String, boolean)
+	  */
+	@Override
 	public List<String> showColumns(boolean tb_in_or_from, String table_name,
 			String database_name, boolean db_in_or_from) throws Exception {
 		List<String> columns_name = new ArrayList<String>();
@@ -1115,6 +595,23 @@ public class HiveTableServiceImpl {
 		return columns_name;
 	}
 
+	 /**
+	  *selectFromTable 
+	  * @param null_all_dist
+	  * @param select_exprs
+	  * @param table_name
+	  * @param where_condition
+	  * @param group_col_list
+	  * @param cluster_col_list
+	  * @param dis_col_list
+	  * @param sort_col_list
+	  * @param limit_num
+	  * @param database_name
+	  * @return
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#selectFromTable(int, java.util.List, java.lang.String, java.util.List, java.util.List, java.util.List, java.util.List, java.util.List, int, java.lang.String)
+	  */
+	@Override
 	public List<List<String>> selectFromTable(int null_all_dist,
 			List<String> select_exprs, String table_name,
 			List<String> where_condition, List<String> group_col_list,
@@ -1231,7 +728,7 @@ public class HiveTableServiceImpl {
 		ResultSet res = null;
 		Statement stmt = HiveConnectionBean.getStmt();
 		stmt.execute("use " + database_name);
-		System.out.println(sql);
+
 		res = stmt.executeQuery(sql);
 		while (res.next()) {
 			List<String> work1 = new ArrayList<String>();
@@ -1254,22 +751,22 @@ public class HiveTableServiceImpl {
 
 		userHistoryLog.addHistotyRecord(historyRecord);
 		log.info("Sucess to excute:" + sql);
-
 		return table_data;
 
 	}
 
-	public ResultSet selectColumnByREGEX(String table_name, String REGEX)
-			throws Exception {
-		String sql = "select " + REGEX + " from " + table_name;
-		ResultSet res = null;
-		 log.info("Sucess to excute:" + sql);
-		 
-		System.out.println(sql);
-		return res;
-
-	}
-
+	 /**
+	  *loadFileIntoTable 
+	  * @param inpath
+	  * @param overwrite
+	  * @param table_name
+	  * @param local
+	  * @param partition_spec
+	  * @param database_name
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#loadFileIntoTable(java.lang.String, boolean, java.lang.String, boolean, java.util.List, java.lang.String)
+	  */
+	@Override
 	public void loadFileIntoTable(String inpath, boolean overwrite,
 			String table_name, boolean local, List<Columns> partition_spec,
 			String database_name) throws Exception {
@@ -1295,7 +792,7 @@ public class HiveTableServiceImpl {
 			}
 			sql = sql + "')";
 		}
-		System.out.println(sql);
+
 		Statement stmt = HiveConnectionBean.getStmt();
 		stmt.execute("use " + database_name);
 		stmt.execute(sql);
@@ -1310,10 +807,15 @@ public class HiveTableServiceImpl {
 		userHistoryLog.addHistotyRecord(historyRecord);
 		log.info("Sucess to excute:" + sql);
 
-		System.out.println(sql);
-
 	}
 
+	 /**
+	  *cloneTo 
+	  * @return
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#cloneTo()
+	  */
+	@Override
 	public HashMap<String, String> cloneTo() throws Exception {
 		Statement stmt = HiveConnectionBean.getStmt();
 		HashMap<String, String> map = new LinkedHashMap<String, String>();
@@ -1325,19 +827,26 @@ public class HiveTableServiceImpl {
 		}
 		stmt.close();
 		res.close();
-
 		return map;
-
 	}
 
+	 /**
+	  *cloneTable 
+	  * @param database_name
+	  * @param table_name
+	  * @param to_database_name
+	  * @param table_new_name
+	  * @throws Exception 
+	  * @see org.hiveadmin.hive.service.HiveTableService#cloneTable(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	  */
+	@Override
 	public void cloneTable(String database_name, String table_name,
 			String to_database_name, String table_new_name) throws Exception {
-		
+
 		String sql = null;
 		sql = "create table if not exists " + to_database_name + "."
-				+ table_new_name + " like  " + database_name + "."
-				+ table_name;
-		System.out.println(sql);
+				+ table_new_name + " like  " + database_name + "." + table_name;
+
 		Statement stmt = HiveConnectionBean.getStmt();
 		stmt.execute(sql);
 		stmt.close();
@@ -1352,7 +861,6 @@ public class HiveTableServiceImpl {
 		userHistoryLog.addHistotyRecord(historyRecord);
 		log.info("Sucess to excute:" + sql);
 
-		
 	}
 
 }

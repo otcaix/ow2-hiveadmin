@@ -1,26 +1,37 @@
 /**  
-* @Project: javaHiveAdimin
-* @Title: User.java
-* @Package org.hiveadmin.hive.beans
-* @Description: TODO
-* @author wangjie wangjie370124@163.com
-* @date Jul 19, 2013 9:09:26 PM
-* @version V1.0  
-*/
+ * @Project: javaHiveAdimin
+ * @Title: User.java
+ * @Package org.hiveadmin.hive.beans
+ * @author wangjie,wangjie370124@163.com
+ * @Copyright: 2013 www.1000chi.comInc. All rights reserved.
+ * @version V1.0  
+ */
 package org.hiveadmin.hive.beans;
 
 /**
- * @ClassName User
- * @Description TODO
- * @author wangjie wangjie370124@163.com
+ *This class is to describe user information.
+ * @author Wangjie wangjie370124@163.com
  * @date Jul 19, 2013 9:09:26 PM
  */
 
 public class User {
+	/**           
+	 * userid:this property is the id of user         
+	 */
 	private int userid;
+	/**           
+	 * username:this property is the name of user         
+	 */
 	private String username;
+	/**           
+	 * usergroup:this property is the group which this user belongs to         
+	 */
 	private String usergroup;
+	/**           
+	 * userpass:this property is the user's password         
+	 */
 	private String userpass;
+	
 	public int getUserid() {
 		return userid;
 	}

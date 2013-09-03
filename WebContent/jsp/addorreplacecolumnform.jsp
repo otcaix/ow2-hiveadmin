@@ -149,7 +149,7 @@
 								</fieldset>
 								
 								<div class="form-actions">
-									<button class="btn btn-small btn-success icon-plus icon-white" type="submit"><i class="icon-plus icon-white"></i> Add</button>
+									<button class="btn btn-small btn-success " type="submit"><i class="icon-plus icon-white"></i> Add</button>
 									<button class="btn">cancel</button>
 								</div>
 

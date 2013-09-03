@@ -1,177 +1,266 @@
+/**  
+ * @Project: javaHiveAdimin
+ * @Title: HiveTableAction.java
+ * @Package org.hiveadmin.hive.action
+ * @author xuliang,xuliang12@octaix.iscas.ac.cn
+ * @Copyright: 2013 www.1000chi.comInc. All rights reserved.
+ * @version V1.0  
+ */
 package org.hiveadmin.hive.action;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.hiveadmin.hive.beans.Columns;
-import org.hiveadmin.hive.beans.Partition;
-import org.hiveadmin.hive.service.impl.HiveTableServiceImpl;
+import org.hiveadmin.hive.service.HiveTableService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
 import com.opensymphony.xwork2.ActionSupport;
+
+/**
+ * HiveTableAction can provide the base operating on table service for user.
+ * HIveTableAction is based on the class named as
+ * HiveTableSreviceImpl.HiveTableAction makes it very convenient to complete
+ * table operation.
+ * 
+ * @author xuliang,xuliang12@octaix.iscas.ac.cn
+ */
 
 @Component
 @Scope("session")
 public class HiveTableAction extends ActionSupport {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 4976591227541380974L;
+
+	/**
+	 * to_database_name:this property is the name of database which the table
+	 * will be copied to
+	 */
 	private String to_database_name;
-	public String getTo_database_name() {
-		return to_database_name;
-	}
-
-	public void setTo_database_name(String to_database_name) {
-		this.to_database_name = to_database_name;
-	}
-
+	/**
+	 * table_new_name:this property is the new name of the table which will be
+	 * copied
+	 */
 	private String table_new_name;
-	private  HashMap<String,String> databaselist;
-	private HiveTableServiceImpl server;
+	/**
+	 * databaselist:this property is the list of database, it is used in the
+	 * select tag in Strust2
+	 */
+	private HashMap<String, String> databaselist;
+	/**
+	 * server:this property is to provide the services for this class
+	 */
+	private HiveTableService server;
+	/**
+	 * log:this property is to output the record of user's operation
+	 */
 	private Logger log = Logger.getLogger(this.getClass());
+	/**
+	 * external:this property is the table type,it is used when create a table
+	 */
 	private boolean external = false;
+	/**
+	 * if_not_exists:this property is to skip the error which is thrown if a
+	 * table or view with the same name already exists
+	 */
 	private boolean if_not_exists = true;
+	/**
+	 * database_name:this property is the name of database
+	 */
 	private String database_name = "default";
+	/**
+	 * table_name:this property is the name of database
+	 */
 	private String table_name;
+	/**
+	 * columns:this property is the columns of table
+	 */
 	private List<Columns> columns = new ArrayList<Columns>();
+	/**
+	 * table_comment:this property is the comment of table
+	 */
 	private String table_comment = "";
+	/**
+	 * P_columns:this property is The partition of table
+	 */
 	private List<Columns> P_columns = new ArrayList<Columns>();
+	/**
+	 * cluser_cols_name:this property is the name of columns that is used to
+	 * cluster
+	 */
 	private List<String> cluser_cols_name = new ArrayList<String>();
+	/**
+	 * clu_sorted_cols:this property is the name of columns that is used to sort
+	 */
 	private List<Columns> clu_sorted_cols = new ArrayList<Columns>();
+	/**
+	 * num_buckets:this property is the number of buckets
+	 */
 	private String num_buckets = "0";
+	/**
+	 * skewed_col_names:this property is the name of columns that is used to
+	 * skew
+	 */
 	private List<String> skewed_col_names = new ArrayList<String>();
+	/**
+	 * skewed_col_values:this property is the value of columns that is used to
+	 * skew
+	 */
 	private List<String> skewed_col_values = new ArrayList<String>();
+	/**
+	 * row_format_value:this property is the format of row
+	 */
 	private String row_format_value;
+	/**
+	 * file_format:this property is the format of file
+	 */
 	private String file_format;
+	/**
+	 * row_sorted_by_cols:this property is the columns that is used to sort
+	 */
 	private List<Columns> row_sorted_by_cols = new ArrayList<Columns>();
-	private String with_serdepropertiles_value;
+	/**
+	 * hdfs_path:this property is the path of data file
+	 */
 	private String hdfs_path;
-	private List<Partition> tblproperties_spec = new ArrayList<Partition>();
+	/**
+	 * select_statement:this property is the statement of selection
+	 */
 	private String select_statement;
+	/**
+	 * exist_table_or_view_name:this property is the name of an exist table or
+	 * view
+	 */
 	private String exist_table_or_view_name;
-
-	private boolean if_exists = false;
-
+	/**
+	 * partition_spec:this property is the name and value of partition
+	 */
 	private List<Columns> partition_spec = new ArrayList<Columns>();
-
-	private List<Partition> partition_spec_location;
-
-	private boolean ignore_protection = false;
-
+	/**
+	 * old_name:this property is the original name of table
+	 */
 	private String old_name;
+	/**
+	 * new_name:this property is the new name of table
+	 */
 	private String new_name;
-
+	/**
+	 * has_column:this property is the flag of "COLUMN" property
+	 */
 	private boolean has_column = false;
+	/**
+	 * col_old_name:this property is the original name of column
+	 */
 	private String col_old_name;
+	/**
+	 * col_new_name:this property is the new name of column
+	 */
 	private String col_new_name;
+	/**
+	 * col_new_type:this property is the type of column
+	 */
 	private String col_new_type;
+	/**
+	 * col_new_comment:this property is the comment of column
+	 */
 	private String col_new_comment;
+	/**
+	 * first_or_after:this property is the flag of relative position
+	 */
 	private int first_or_after = 0;
+	/**
+	 * after_col_name:this property is the name of relative column
+	 */
 	private String after_col_name;
-
+	/**
+	 * replace_or_add:this property is the flag of add a column or replace
+	 * columns
+	 */
 	private boolean replace_or_add = false;
 
-	private List<Columns> table_properties = new ArrayList<Columns>();
-	private String serde_class_name;
-	private List<Columns> serde_properties = new ArrayList<Columns>();
-
-	private List<String> clustered_col_names = new ArrayList<String>();
-	private List<String> sorted_col_names = new ArrayList<String>();
-
-	private String location;
-
-	private boolean archive_or_unarchive = false;
-
-	private boolean en_or_disable = false;
-	private boolean nodrop_or_offline = false;
-
-	private List<Columns> old_partition_spec = new ArrayList<Columns>();
-	private List<Columns> new_partition_spec = new ArrayList<Columns>();
-
-	private boolean in_or_from = false;
-	private String identifier;
+	/**
+	 * tb_in_or_from:this property is the flag of "IN" or "FROM" for table
+	 */
 	private boolean tb_in_or_from = true;
-
+	/**
+	 * db_in_or_from:this property is the flag of "IN" or "FROM" for database
+	 */
 	private boolean db_in_or_from = false;
-	private String table_or_view_name;
-
-	private int null_all_dist;
-	private List<String> select_exprs = new ArrayList<String>();
-
-	private List<String> where_condition = new ArrayList<String>();
-	private List<String> group_col_list = new ArrayList<String>();
-	private List<String> cluster_col_list = new ArrayList<String>();
-	private List<String> dis_col_list = new ArrayList<String>();
-	private List<Columns> sort_col_list = new ArrayList<Columns>();
-	private int limit_num = 0;
-
-	private String REGEX;
-
-	private String inpath;
-	private boolean overwrite;
-	private boolean local;
-	List<String> columns_name;
-	private List<String> tableList = new ArrayList<String>();
-	private List<Columns> tableDetails = new ArrayList<Columns>();
-	private List<List<String>> table_data;
-
-
-
-	public String getTable_new_name() {
-		return table_new_name;
-	}
-
-	public void setTable_new_name(String table_new_name) {
-		this.table_new_name = table_new_name;
-	}
-
-	public HashMap<String, String> getDatabaselist() {
-		return databaselist;
-	}
-
-	public void setDatabaselist(HashMap<String, String> databaselist) {
-		this.databaselist = databaselist;
-	}
-
-	public List<String> getColumns_name() {
-		return columns_name;
-	}
-
-	public void setColumns_name(List<String> columns_name) {
-		this.columns_name = columns_name;
-	}
-
-	public List<List<String>> getTable_data() {
-		return table_data;
-	}
-
-	public void setTable_data(List<List<String>> table_data) {
-		this.table_data = table_data;
-	}
 
 	/**
-	 * @return
+	 * null_all_dist:this property is the flag of "NULL" or "ALL" or "DISTINCT"
 	 */
-	public List<Columns> getTableDetails() {
-		return tableDetails;
-	}
+	private int null_all_dist;
+	/**
+	 * select_exprs:this property is the names of columns that will be selected
+	 * from table
+	 */
+	private List<String> select_exprs = new ArrayList<String>();
+	/**
+	 * where_condition:this property is a boolean expression
+	 */
+	private List<String> where_condition = new ArrayList<String>();
+	/**
+	 * group_col_list:this property is the names of columns will be as s group
+	 */
+	private List<String> group_col_list = new ArrayList<String>();
+	/**
+	 * cluster_col_list:this property is the names of columns that will be used
+	 * in clustering
+	 */
+	private List<String> cluster_col_list = new ArrayList<String>();
+	/**
+	 * dis_col_list:this property is the name of columns that will be used in distributing
+	 */
 
-	public void setTableDetails(List<Columns> tableDetails) {
-		this.tableDetails = tableDetails;
-	}
+	private List<String> dis_col_list = new ArrayList<String>();
+	/**
+	 * sort_col_list:this property is The names of columns will be used in
+	 * sorting
+	 */
+	private List<Columns> sort_col_list = new ArrayList<Columns>();
+	/**
+	 * limit_num:this property is The number of the result will be return
+	 */
+	private int limit_num = 0;
 
-	private ResultSet res = null;
+	/**
+	 * inpath:this property is The path of file that will be loaded
+	 */
+	private String inpath;
+	/**
+	 * overwrite:this property is The flag of property "OVERWRITE"
+	 */
+	private boolean overwrite;
+	/**
+	 * local:this property is The flag of "LOCATION"
+	 */
+	private boolean local;
+	/**
+	 * columns_name:this property is list of columns'name
+	 */
+	List<String> columns_name;
+	/**
+	 * tableList:this property is the list of table
+	 */
+	private List<String> tableList = new ArrayList<String>();
+	/**
+	 * tableDetails:this property is the list of columns of a table
+	 */
+	private List<Columns> tableDetails = new ArrayList<Columns>();
+	/**
+	 * table_data:this property is the list of data from a table
+	 */
+	private List<List<String>> table_data;
 
+	/**
+	 * createTable is the method to provide the service about creating a table
+	 * 
+	 * @return String
+	 */
 	public String createTable() {
-
 		if (table_name == null || table_name.equals("")) {
 			log.error("table name is null");
 			return INPUT;
@@ -182,8 +271,7 @@ public class HiveTableAction extends ActionSupport {
 					table_name, columns, table_comment, P_columns,
 					cluser_cols_name, clu_sorted_cols, num_buckets,
 					skewed_col_names, skewed_col_values, row_format_value,
-					file_format, row_sorted_by_cols,
-					with_serdepropertiles_value, hdfs_path, tblproperties_spec,
+					file_format, row_sorted_by_cols, hdfs_path,
 					select_statement, exist_table_or_view_name);
 			log.info("Sucess to create table!");
 			return SUCCESS;
@@ -196,6 +284,12 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
+	/**
+	 * dropTable is the method to provide the service: removes metadata and data
+	 * for this table.
+	 * 
+	 * @return String
+	 */
 	public String dropTable() {
 
 		if (table_name == null || table_name.equals("")) {
@@ -216,6 +310,12 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
+	/**
+	 * truncateTable is the method to provide the service: removes all rows from
+	 * a table or partition(s)
+	 * 
+	 * @return String
+	 */
 	public String truncateTable() {
 		if (table_name == null || table_name.equals("")) {
 			log.error("table name is null");
@@ -234,80 +334,12 @@ public class HiveTableAction extends ActionSupport {
 		}
 	}
 
-	public String addPartition() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Add partitions error: Table_name is null");
-			result = true;
-		}
-		if (partition_spec_location.isEmpty()) {
-			log.error("Add partitions error: Patitions is null");
-			result = true;
-
-		}
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.addPartitions(table_name, if_not_exists,
-					partition_spec_location);
-			log.info("Success to add partition");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
-	public String recverPartitions() {
-		if (table_name.equals("") || table_name == null) {
-			log.error("Recover partition error: Table name is null!");
-			return INPUT;
-		}
-		try {
-			server.recoverPartitions(table_name);
-			log.info("Success to Recover partition");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
-	public String dropPartition() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Drop partition error: Table name is null");
-			result = true;
-		}
-		if (partition_spec_location.isEmpty()) {
-			log.error("Drop partition error: Patitions is null");
-			result = true;
-
-		}
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.dropPartition(table_name, if_exists,
-					partition_spec_location, ignore_protection);
-			log.info("Success to drop partition");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
+	/**
+	 * renameTable is the method to provide the service: change the name of a
+	 * table to a different name.
+	 * 
+	 * @return String
+	 */
 	public String renameTable() {
 		boolean result = false;
 		if (old_name.equals("") || old_name == null) {
@@ -337,6 +369,12 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
+	/**
+	 * changeColumn is the method to provide the service: change a column's
+	 * name, data type, comment, or position.
+	 * 
+	 * @return String
+	 */
 	public String changeColumn() {
 		boolean result = false;
 		if (table_name.equals("") || table_name == null) {
@@ -371,6 +409,13 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
+	/**
+	 * addorReplacecolumn is the method to provide the service: add new columns
+	 * to the end of the existing columns but before the partition columns or to
+	 * removes all existing columns and adds the new set of columns.
+	 * 
+	 * @return String
+	 */
 	public String addorReplacecolumn() {
 
 		boolean result = false;
@@ -401,267 +446,18 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
-	public String alterTbaleProperties() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Alter table properties:Table name is null");
-			result = true;
-		}
-
-		if (table_properties.isEmpty()) {
-			log.error("Alter table properties:Table properties is null");
-			result = true;
-
-		}
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.alterTbaleProperties(table_name, table_properties,
-					database_name);
-			log.info("Sucess to alter table properties");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-	}
-
-	public String addSerdeProperties() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Add serde properties error:Table name is null");
-			result = true;
-		}
-
-		if ((serde_class_name == null || serde_class_name.equals(""))
-				&& serde_properties.isEmpty()) {
-			log.error("Add serde properties error:Serde class name and Serde properties can't be null at the same time");
-			result = true;
-
-		}
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.addSerdeProperties(table_name, serde_class_name,
-					serde_properties);
-			log.info("Sucess to add serde properties");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
-	public String alterTableorPartitonFormat() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Alter Table/Partition file format error:Table name is null");
-			result = true;
-		}
-
-		if ((file_format == null || file_format.equals(""))
-				&& serde_properties.isEmpty()) {
-			log.error("Alter Table/Partition file format error:File format is null");
-			result = true;
-
-		}
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.alterTableorPartitonFormat(table_name, partition_spec,
-					file_format);
-			log.info("Sucess to alter Table/Partition file format");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
-	public String alterTableStorageProperties() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Alter Table storage properties error:Table name is null");
-			result = true;
-		}
-
-		if (clustered_col_names.isEmpty()) {
-			log.error("Alter Table storage properties error:Clustered clolumn names is null");
-			result = true;
-
-		}
-		if (Integer.parseInt(num_buckets) < 0) {
-			log.error("Alter Table storage properties error:Number od buckets must >= 0");
-			result = true;
-
-		}
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.alterTableStorageProperties(table_name, clustered_col_names,
-					sorted_col_names, num_buckets);
-			log.info("Sucess to alter  Table storage properties");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-	}
-
-	public String alterTableorPartitionLocation() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Alter table or propertiesc location error:Table name is null");
-			result = true;
-		}
-		if (location.equals("") || location == null) {
-			log.error("Alter table or propertiesc location error:Location is null");
-			result = true;
-		}
-
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.alterTableorPartitionLocation(table_name, partition_spec,
-					location);
-			log.info("Sucess to alter  table or propertiesc location");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-	}
-
-	public String alterTableTouch() {
-
-		if (table_name.equals("") || table_name == null) {
-			log.error("Alter table touch error:Table name is null");
-			return INPUT;
-		}
-
-		try {
-			server.alterTableTouch(table_name, partition_spec);
-			log.info("Sucess to alter  table touch");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-	}
-
-	public String alterTableUnorArchive() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Alter table (Un)Archive error:Table name is null");
-			result = true;
-		}
-		if (partition_spec.isEmpty()) {
-			log.error("Alter table (Un)Archive error:Partition_spec is null");
-			result = true;
-		}
-
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.alterTableUnorArchive(archive_or_unarchive, table_name,
-					partition_spec);
-			log.info("Sucess to alter  table (Un)Archive");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-	}
-
-	public String alterTableorPartitionProtections() {
-		if (table_name.equals("") || table_name == null) {
-			log.error("Alter table or Partition protection error:Table name is null");
-			return INPUT;
-		}
-		try {
-			server.alterTableorPartitionProtections(table_name, partition_spec,
-					en_or_disable, nodrop_or_offline);
-			log.info("Sucess to alter  table or Partition protection");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
-	public String alterTableRenamePartition() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Alter table rename partion error:Table name is null");
-			result = true;
-		}
-		if (old_partition_spec.isEmpty()) {
-			log.error("Alter table rename partion error:Old partition_spec is null");
-			result = true;
-		}
-		if (new_partition_spec.isEmpty()) {
-			log.error("Alter table rename partion error:New partition_spec is null");
-			result = true;
-		}
-		if (old_partition_spec.size() != new_partition_spec.size()) {
-			log.error("Alter table rename partion error:The two Partition_specs have different size");
-			result = true;
-		}
-
-		if (result) {
-			return INPUT;
-		}
-		try {
-			server.alterTableRenamePartition(table_name, old_partition_spec,
-					new_partition_spec);
-			log.info("Sucess to alter table rename partion");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
+	/**
+	 * showTable is the method to provide the service:list all the base tables
+	 * and views in the current database
+	 * 
+	 * @return String
+	 */
 	public String showTable() {
 
 		try {
-
-			if (identifier == null || identifier.equals("")) {
-				tableList = server.showTable(database_name);
-			} else {
-				tableList = server.showTable(identifier, database_name);
-			}
+			tableList = server.showTable(database_name);
 			return SUCCESS;
 		} catch (Exception e) {
-
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -669,59 +465,12 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
-	public String showTableProperties() {
-		if (table_name.equals("") || table_name == null) {
-			log.error("show Table Properties error:Table name is null");
-			return INPUT;
-		}
-		try {
-			if (identifier == null || identifier.equals("")) {
-				res = server.showTableProperties(table_name);
-			} else {
-				res = server.ShowTableProperties(table_name, identifier);
-			}
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-	}
-
-	public String showPartitions() {
-		if (table_name.equals("") || table_name == null) {
-			log.error("show partition error:Table name is null");
-			return INPUT;
-		}
-		try {
-			res = server.showPartitions(table_name, partition_spec);
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-	}
-
-	public String showTablePartitionExtended() {
-		if (identifier.equals("") || identifier == null) {
-			log.error("show table partition extended error:identifier is null");
-			return INPUT;
-		}
-		try {
-			res = server.showTablePartitionExtended(database_name, in_or_from,
-					identifier, partition_spec);
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-	}
-
+	/**
+	 * showColumns is the method to provide the service:show all the columns in
+	 * a table including partition columns
+	 * 
+	 * @return String
+	 */
 	public String showColumns() {
 		if (table_name.equals("") || table_name == null) {
 			log.error("Show columns error:Table name is null");
@@ -740,24 +489,12 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
-	public String showCreateTable() {
-		if ((database_name != null)
-				&& (table_or_view_name == null || table_or_view_name.equals(""))) {
-			log.error("show Create Table error:database name is not null but table name is null");
-			return INPUT;
-		}
-		try {
-			res = server.showCreateTable(table_or_view_name, database_name);
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
+	/**
+	 * selectFromTable is the method to provide the service:select the data from
+	 * table.
+	 * 
+	 * @return String
+	 */
 	public String selectFromTable() {
 		if (table_name.equals("") || table_name == null) {
 			log.error("Select from table error:Table name is null");
@@ -780,33 +517,12 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
-	public String selectColumnByREGEX() {
-		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Select column by REGEX error:Table name is null");
-			result = true;
-		}
-		if (REGEX == null || REGEX.equals("")) {
-			log.error("Select column by REGEX error:REGEX is null");
-			result = true;
-		}
-
-		if (result) {
-			return INPUT;
-		}
-		try {
-			res = server.selectColumnByREGEX(table_name, REGEX);
-			log.info("Sucess to select column by REGEX");
-			return SUCCESS;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			log.error(e.toString());
-			return ERROR;
-		}
-
-	}
-
+	/**
+	 * loadFileIntoTable is the method to provide the service:load files into
+	 * tables.<br>
+	 * 
+	 * @return String
+	 */
 	public String loadFileIntoTable() {
 		boolean result = false;
 		if (table_name.equals("") || table_name == null) {
@@ -835,6 +551,12 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
+	/**
+	 * tableDetails is the method to provide the service:shows the list of
+	 * columns including partition columns for the given table.
+	 * 
+	 * @return String
+	 */
 	public String tableDetails() {
 		boolean result = false;
 		if (table_name.equals("") || table_name == null) {
@@ -858,41 +580,52 @@ public class HiveTableAction extends ActionSupport {
 
 	}
 
+	/**
+	 * cloneTo is the method to provide the service:
+	 * 
+	 * @return String
+	 */
 	public String cloneTo() {
 		try {
 			databaselist = server.cloneTo();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return SUCCESS;
 	}
-      public String cloneTable(){
-    	  if (table_new_name.equals("") || table_new_name == null) {
-  			log.error("Load file into table error:Table name is null");
-  			addFieldError("tablename", "table name can't be null");
-  			return INPUT;
-    	  }
-  			try {
-  				server.cloneTable(database_name,table_name,to_database_name,table_new_name);
-  				log.info("Sucess to drop table");
-  				return SUCCESS;
-  			} catch (Exception e) {
 
-  				e.printStackTrace();
-  				log.error(e.toString());
-  				return ERROR;
-  			}
-    	
-    	  
-	
-      }
-	public HiveTableServiceImpl getServer() {
+	/**
+	 * cloneTable is the method to provide the service: copy an exist table to
+	 * an exist database and rename the table.
+	 * 
+	 * @return String
+	 */
+	public String cloneTable() {
+		if (table_new_name.equals("") || table_new_name == null) {
+			log.error("Load file into table error:Table name is null");
+			addFieldError("tablename", "table name can't be null");
+			return INPUT;
+		}
+		try {
+			server.cloneTable(database_name, table_name, to_database_name,
+					table_new_name);
+			log.info("Sucess to drop table");
+			return SUCCESS;
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			log.error(e.toString());
+			return ERROR;
+		}
+
+	}
+
+	public HiveTableService getServer() {
 		return server;
 	}
 
 	@Resource(name = "hiveTableServiceImpl")
-	public void setServer(HiveTableServiceImpl server) {
+	public void setServer(HiveTableService server) {
 		this.server = server;
 	}
 
@@ -1016,14 +749,6 @@ public class HiveTableAction extends ActionSupport {
 		this.row_sorted_by_cols = row_sorted_by_cols;
 	}
 
-	public String getWith_serdepropertiles_value() {
-		return with_serdepropertiles_value;
-	}
-
-	public void setWith_serdepropertiles_value(
-			String with_serdepropertiles_value) {
-		this.with_serdepropertiles_value = with_serdepropertiles_value;
-	}
 
 	public String getHdfs_path() {
 		return hdfs_path;
@@ -1031,14 +756,6 @@ public class HiveTableAction extends ActionSupport {
 
 	public void setHdfs_path(String hdfs_path) {
 		this.hdfs_path = hdfs_path;
-	}
-
-	public List<Partition> getTblproperties_spec() {
-		return tblproperties_spec;
-	}
-
-	public void setTblproperties_spec(List<Partition> tblproperties_spec) {
-		this.tblproperties_spec = tblproperties_spec;
 	}
 
 	public String getSelect_statement() {
@@ -1057,37 +774,12 @@ public class HiveTableAction extends ActionSupport {
 		this.exist_table_or_view_name = exist_table_or_view_name;
 	}
 
-	public boolean isIf_exists() {
-		return if_exists;
-	}
-
-	public void setIf_exists(boolean if_exists) {
-		this.if_exists = if_exists;
-	}
-
 	public List<Columns> getPartition_spec() {
 		return partition_spec;
 	}
 
 	public void setPartition_spec(List<Columns> partition_spec) {
 		this.partition_spec = partition_spec;
-	}
-
-	public List<Partition> getPartition_spec_location() {
-		return partition_spec_location;
-	}
-
-	public void setPartition_spec_location(
-			List<Partition> partition_spec_location) {
-		this.partition_spec_location = partition_spec_location;
-	}
-
-	public boolean isIgnore_protection() {
-		return ignore_protection;
-	}
-
-	public void setIgnore_protection(boolean ignore_protection) {
-		this.ignore_protection = ignore_protection;
 	}
 
 	public String getOld_name() {
@@ -1170,116 +862,12 @@ public class HiveTableAction extends ActionSupport {
 		this.replace_or_add = replace_or_add;
 	}
 
-	public List<Columns> getTable_properties() {
-		return table_properties;
-	}
-
-	public void setTable_properties(List<Columns> table_properties) {
-		this.table_properties = table_properties;
-	}
-
-	public String getSerde_class_name() {
-		return serde_class_name;
-	}
-
-	public void setSerde_class_name(String serde_class_name) {
-		this.serde_class_name = serde_class_name;
-	}
-
-	public List<Columns> getSerde_properties() {
-		return serde_properties;
-	}
-
-	public void setSerde_properties(List<Columns> serde_properties) {
-		this.serde_properties = serde_properties;
-	}
-
-	public List<String> getClustered_col_names() {
-		return clustered_col_names;
-	}
-
-	public void setClustered_col_names(List<String> clustered_col_names) {
-		this.clustered_col_names = clustered_col_names;
-	}
-
-	public List<String> getSorted_col_names() {
-		return sorted_col_names;
-	}
-
-	public void setSorted_col_names(List<String> sorted_col_names) {
-		this.sorted_col_names = sorted_col_names;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public boolean isArchive_or_unarchive() {
-		return archive_or_unarchive;
-	}
-
-	public void setArchive_or_unarchive(boolean archive_or_unarchive) {
-		this.archive_or_unarchive = archive_or_unarchive;
-	}
-
-	public boolean isEn_or_disable() {
-		return en_or_disable;
-	}
-
-	public void setEn_or_disable(boolean en_or_disable) {
-		this.en_or_disable = en_or_disable;
-	}
-
-	public boolean isNodrop_or_offline() {
-		return nodrop_or_offline;
-	}
-
-	public void setNodrop_or_offline(boolean nodrop_or_offline) {
-		this.nodrop_or_offline = nodrop_or_offline;
-	}
-
-	public List<Columns> getOld_partition_spec() {
-		return old_partition_spec;
-	}
-
-	public void setOld_partition_spec(List<Columns> old_partition_spec) {
-		this.old_partition_spec = old_partition_spec;
-	}
-
-	public List<Columns> getNew_partition_spec() {
-		return new_partition_spec;
-	}
-
-	public void setNew_partition_spec(List<Columns> new_partition_spec) {
-		this.new_partition_spec = new_partition_spec;
-	}
-
 	public String getDatabase_name() {
 		return database_name;
 	}
 
 	public void setDatabase_name(String database_name) {
 		this.database_name = database_name;
-	}
-
-	public boolean isIn_or_from() {
-		return in_or_from;
-	}
-
-	public void setIn_or_from(boolean in_or_from) {
-		this.in_or_from = in_or_from;
-	}
-
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
 	}
 
 	public boolean isTb_in_or_from() {
@@ -1296,14 +884,6 @@ public class HiveTableAction extends ActionSupport {
 
 	public void setDb_in_or_from(boolean db_in_or_from) {
 		this.db_in_or_from = db_in_or_from;
-	}
-
-	public String getTable_or_view_name() {
-		return table_or_view_name;
-	}
-
-	public void setTable_or_view_name(String table_or_view_name) {
-		this.table_or_view_name = table_or_view_name;
 	}
 
 	public int getNull_all_dist() {
@@ -1370,14 +950,6 @@ public class HiveTableAction extends ActionSupport {
 		this.limit_num = limit_num;
 	}
 
-	public String getREGEX() {
-		return REGEX;
-	}
-
-	public void setREGEX(String rEGEX) {
-		REGEX = rEGEX;
-	}
-
 	public String getInpath() {
 		return inpath;
 	}
@@ -1402,14 +974,6 @@ public class HiveTableAction extends ActionSupport {
 		this.local = local;
 	}
 
-	public ResultSet getRes() {
-		return res;
-	}
-
-	public void setRes(ResultSet res) {
-		this.res = res;
-	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
@@ -1420,6 +984,54 @@ public class HiveTableAction extends ActionSupport {
 
 	public void setTableList(List<String> tableList) {
 		this.tableList = tableList;
+	}
+
+	public String getTo_database_name() {
+		return to_database_name;
+	}
+
+	public void setTo_database_name(String to_database_name) {
+		this.to_database_name = to_database_name;
+	}
+
+	public String getTable_new_name() {
+		return table_new_name;
+	}
+
+	public void setTable_new_name(String table_new_name) {
+		this.table_new_name = table_new_name;
+	}
+
+	public HashMap<String, String> getDatabaselist() {
+		return databaselist;
+	}
+
+	public void setDatabaselist(HashMap<String, String> databaselist) {
+		this.databaselist = databaselist;
+	}
+
+	public List<String> getColumns_name() {
+		return columns_name;
+	}
+
+	public void setColumns_name(List<String> columns_name) {
+		this.columns_name = columns_name;
+	}
+
+	public List<List<String>> getTable_data() {
+		return table_data;
+	}
+
+	public void setTable_data(List<List<String>> table_data) {
+		this.table_data = table_data;
+	}
+
+	public List<Columns> getTableDetails() {
+		return tableDetails;
+	}
+
+	public void setTableDetails(List<Columns> tableDetails) {
+		this.tableDetails = tableDetails;
 	}
 
 }
