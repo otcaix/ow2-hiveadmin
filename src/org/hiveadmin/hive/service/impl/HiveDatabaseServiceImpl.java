@@ -21,6 +21,7 @@ import org.hiveadmin.hive.beans.HistoryRecord;
 import org.hiveadmin.hive.dao.impl.UserHistoryLog;
 import org.hiveadmin.hive.hiveutils.HiveConnectionBean;
 import org.hiveadmin.hive.service.HiveDatabaseService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component(value = "hiveDatabaseServiceImpl")
+@Scope("prototype")
 public class HiveDatabaseServiceImpl implements HiveDatabaseService {
 
 	/**

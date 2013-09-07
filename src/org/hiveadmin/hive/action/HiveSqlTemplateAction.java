@@ -41,16 +41,49 @@ import com.opensymphony.xwork2.ActionSupport;
 @Scope("session")
 public class HiveSqlTemplateAction extends ActionSupport{
 	
+	/**
+	 * hiveSqlTemplateService
+	 */
 	private HiveSqlTemplateService hiveSqlTemplateService;
+	/**
+	 * hiveSqlTemplateBean
+	 */
 	private HiveSqlTemplateBean hiveSqlTemplateBean;
+	/**
+	 * errorMsg returned to the views
+	 */
 	private String errorMsg;
+	/**
+	 * log
+	 */
 	private Logger log = Logger.getLogger(HiveSqlTemplateAction.class);
+	/**
+	 * temp_name_to_delete
+	 */
 	private String temp_name_to_delete;
+	/**
+	 * temp_owner_name
+	 */
 	private String temp_owner_name;
+	/**
+	 * hiveSqlTemplateList
+	 */
 	private List<HiveSqlTemplateBean> hiveSqlTemplateList;
+	/**
+	 * executeHiveSqlTemplateResultset
+	 */
 	private ResultSet executeHiveSqlTemplateResultset;
+	/**
+	 * executeHiveSqlTemplateList
+	 */
 	private List executeHiveSqlTemplateList;
+	/**
+	 * database
+	 */
 	private String database;
+	/**
+	 * executeHiveSqlTemplateColumList
+	 */
 	private Set executeHiveSqlTemplateColumList;
 	
 	public Set getExecuteHiveSqlTemplateColumList() {
@@ -126,6 +159,12 @@ public class HiveSqlTemplateAction extends ActionSupport{
 	public void setExecuteHiveSqlTemplateList(List executeHiveSqlTemplateList) {
 		this.executeHiveSqlTemplateList = executeHiveSqlTemplateList;
 	}
+	
+	/** 
+	* createHiveSqlTemplate 
+	* <p>to create a hive sql template<br>
+	* 
+	*/
 	public String createHiveSqlTemplate(){
 		try {
 			hiveSqlTemplateBean.setOwner_name((String) ServletActionContext.getContext().getSession().get("user"));
@@ -139,7 +178,11 @@ public class HiveSqlTemplateAction extends ActionSupport{
 		log.info("create HiveSqlTemplate success");
 		return SUCCESS;
 	}
-
+	
+	/** 
+	* deleteHiveSqlTemplate 
+	* <p>to delete the given hive sql tmeplate<br>
+	*/
 	public String deleteHiveSqlTemplate(){
 		try{
 			hiveSqlTemplateService.deleteHiveSqlTemplate(hiveSqlTemplateBean.getTemp_name());
@@ -151,6 +194,11 @@ public class HiveSqlTemplateAction extends ActionSupport{
 		log.info("delete HiveSqlTemplate success");
 		return SUCCESS;
 	}
+	
+	/** 
+	* updateHiveSqlTemplate 
+	* <p>to update the givent hive sql tmeplate<br>
+	*/
 	public String updateHiveSqlTemplate(){
 		try {
 			hiveSqlTemplateBean.setOwner_name((String) ServletActionContext.getContext().getSession().get("user"));
@@ -164,6 +212,10 @@ public class HiveSqlTemplateAction extends ActionSupport{
 		log.info("update HiveSalTemplate success.");
 		return SUCCESS;
 	}
+	/** 
+	* fetchHiveSqlTemplate 
+	* <p>get the the given hive sql template<br>
+	*/
 	public String fetchHiveSqlTemplate(){
 		try {
 			System.out.println("===================template name1111");
@@ -180,6 +232,10 @@ public class HiveSqlTemplateAction extends ActionSupport{
 		log.info("get hiveSqlTemplate successs. [temp_name:"+hiveSqlTemplateBean.getTemp_name()+"]");
 		return SUCCESS;
 	}
+	/** 
+	* fetchHiveSqlTemplateList 
+	* <p>get the list of sql template of the current user<br> 
+	*/
 	public String fetchHiveSqlTemplateList(){
 		try {
 			hiveSqlTemplateList = hiveSqlTemplateService.getHiveSqlTemplateList((String) ServletActionContext.getContext().getSession().get("user"));
@@ -193,6 +249,10 @@ public class HiveSqlTemplateAction extends ActionSupport{
 		return SUCCESS;
 	}
 	
+	/** 
+	* executeHiveSqlTemplate 
+	* <p>to execute the sql of the template<br>
+	*/
 	public String executeHiveSqlTemplate(){
 		try {
 			HttpServletResponse response = ServletActionContext.getResponse();

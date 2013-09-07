@@ -11,7 +11,7 @@ package org.hiveadmin.hive;
 
 /**
  * @ClassName HiveConst
- * @Description TODO
+ * <p>some const variables<br>
  * @author wangjie wangjie370124@163.com
  * @date Jul 14, 2013 10:35:03 PM
  */

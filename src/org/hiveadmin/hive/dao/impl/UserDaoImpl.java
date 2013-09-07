@@ -7,9 +7,10 @@
 * @date Jul 19, 2013 9:19:26 PM
 * @version V1.0  
 */
-package org.hiveadmin.hive.dao;
+package org.hiveadmin.hive.dao.impl;
 
 import org.hiveadmin.hive.beans.User;
+import org.hiveadmin.hive.dao.UserDao;
 
 /**
  * @ClassName UserDaoImpl

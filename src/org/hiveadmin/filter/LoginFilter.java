@@ -1,3 +1,7 @@
+/**  
+ * since the user management function is not accomplished, this filter is intended to mock a registered user. 
+ * 
+ */
 package org.hiveadmin.filter;
 
 import java.io.IOException;

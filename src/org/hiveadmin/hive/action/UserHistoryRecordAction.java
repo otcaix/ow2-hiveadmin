@@ -28,10 +28,25 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 @Component
 public class UserHistoryRecordAction extends ActionSupport{
+	/**
+	 * userHitoryLog
+	 */
 	private UserHistoryLog userHitoryLog = new UserHistoryLog();
+	/**
+	 * historyRecordList
+	 */
 	private List<HistoryRecord> historyRecordList;
+	/**
+	 * sortType
+	 */
 	private String sortType;
+	/**
+	 * errorMsg
+	 */
 	private String errorMsg;
+	/**
+	 * log
+	 */
 	private Logger log = Logger.getLogger(UserHistoryRecordAction.class);
 	
 	public List<HistoryRecord> getHistoryRecordList() {
@@ -59,6 +74,10 @@ public class UserHistoryRecordAction extends ActionSupport{
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}
+	/** 
+	* getUserHistoryRecordList 
+	* <p>get the list of history record<br>
+	*/
 	public String getUserHistoryRecordList(){
 		try{
 			historyRecordList = userHitoryLog.getHistoryRecord((String) ServletActionContext.getContext().getSession().get("user"),sortType);

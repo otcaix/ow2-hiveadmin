@@ -27,8 +27,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * @ClassName UserHistoryLog
- * @Description TODO
+ * UserHistoryLog
+ * dao to operate the user history records;
  * @author wangjie wangjie370124@163.com
  * @date Jul 19, 2013 8:49:09 PM
  */
@@ -71,7 +71,7 @@ public class UserHistoryLog implements UserHistory{
 		}
 	}
 	/* (non-Javadoc)
-	 * @return: 若查询成功则返回历史列表;查询失败,返回空 
+	 * 
 	 * @see org.hiveadmin.hive.dao.UserHistory#getHistoryRecord(java.lang.String, java.lang.String)
 	 */
 	@Override

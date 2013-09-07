@@ -43,8 +43,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Result;
 
 /**
- * @ClassName HiveCliAction
- * @Description TODO
+ * HiveCliAction
+ * do hive operations by the local hive client
  * @author wangjie wangjie370124@163.com
  * @date Aug 13, 2013 6:05:43 PM
  */
@@ -52,17 +52,53 @@ import com.opensymphony.xwork2.Result;
 @Component
 @Scope("session")
 public class HiveCliAction extends ActionSupport{
+	/**
+	 * log
+	 */
 	private Logger log = Logger.getLogger(HiveCliAction.class);
+	/**
+	 * hiveCliServiceImpl
+	 */
 	private HiveCliService hiveCliServiceImpl;
+	/**
+	 * database
+	 */
 	private String database;
+	/**
+	 * sql
+	 */
 	private String sql;
+	/**
+	 * fingerPrint
+	 */
 	private String fingerPrint;
+	/**
+	 * errorMsg
+	 */
 	private String errorMsg;
+	/**
+	 * lastReadSize
+	 */
 	private long lastReadSize;
+	/**
+	 * newstart
+	 */
 	private String newstart;
+	/**
+	 * readStatus
+	 */
 	private String readStatus;
+	/**
+	 * realTimeReadFileBean
+	 */
 	private RealTimeReadFileBean realTimeReadFileBean;
+	/**
+	 * resultFilecontent
+	 */
 	private String resultFilecontent;
+	/**
+	 * isroot
+	 */
 	private boolean isroot;
 	
 	public String getResultFilecontent() {
@@ -132,11 +168,23 @@ public class HiveCliAction extends ActionSupport{
 	public void setSql(String sql) {
 		this.sql = sql;
 	}
+	/** 
+	* createFingerPrint 
+	* <p>create a fingerprint by the current user name an the typestamp<br>
+	* 
+	*/
 	public String createFingerPrint(){
 		String user = (String)ServletActionContext.getContext().getSession().get("user");
 		String ts = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		return user+"_"+ts;
 	}
+	
+	
+	/** 
+	* hiveCliQuery 
+	* <p>to do the hive operations by the local hive client<br>
+	* 
+	*/
 	public String hiveCliQuery(){
 		System.out.println("hivecliQuery=====");
 		this.fingerPrint = createFingerPrint();
@@ -174,6 +222,12 @@ public class HiveCliAction extends ActionSupport{
 		return null;
 	}*/
 	
+	
+	
+	/** 
+	* getQueryStatus 
+	* <p>return the String of the query status. the status is read from the responding log file. and can read 30 lines once at most<br> 
+	*/
 	public String getQueryStatus() throws IOException{
 		System.out.println("getQueryStatus======");
 		
@@ -181,17 +235,17 @@ public class HiveCliAction extends ActionSupport{
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 				
-		System.out.println("[[[[[[[[[[");
+		log.debug("[[[[[[[[[[");
 		if("true".equals(newstart)){
-			System.out.println("true. start form 0;");
+			log.debug("true. start form 0;");
 			this.realTimeReadFileBean.setLastread(0);	
 		}else{
-			System.out.println("false. start from"+this.realTimeReadFileBean.getLastread());
+			log.debug("false. start from"+this.realTimeReadFileBean.getLastread());
 		}
 		hiveCliServiceImpl.setContextPath(ServletActionContext.getServletContext().getRealPath("/"));
 		hiveCliServiceImpl.getQueryStatusBean(fingerPrint, this.realTimeReadFileBean, lastReadSize, 30);
 		
-		System.out.println("stoped:"+this.realTimeReadFileBean.getLastread());
+		log.debug("stoped:"+this.realTimeReadFileBean.getLastread());
 		Iterator<String> it = realTimeReadFileBean.getLines().iterator();
 		while(it.hasNext()){
 			String ress= it.next();
@@ -200,12 +254,16 @@ public class HiveCliAction extends ActionSupport{
 			out.print("<br>");
 		}
 		
-		System.out.println(realTimeReadFileBean.getLines().toString());
+		log.debug(realTimeReadFileBean.getLines().toString());
 		out.flush();
 		out.close();	
 		return null;
 	}
 	
+	/** 
+	* getResult 
+	* <p>get the result file content reading from the log file<br>
+	*/
 	public String getResult(){
 		log.warn("********getResult:");
 		log.warn("fingerprint:"+this.fingerPrint);
@@ -222,6 +280,10 @@ public class HiveCliAction extends ActionSupport{
 		//this.resultFilecontent="ok";
 		return SUCCESS;
 	}
+	/** 
+	* getDownLoadResultFile 
+	* <p>return the result file resource<br>
+	*/
 	public InputStream getDownLoadResultFile(){
 		log.info("currnt downloading fingerPrint is:"+fingerPrint);
 		try {

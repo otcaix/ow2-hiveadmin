@@ -2,8 +2,8 @@
 * @Project: javaHiveAdimin
 * @Title: HDFSUtils.java
 * @Package org.hiveadmin.hdfs.utils
-* @Description: TODO
-* @author wangjie wangjie370124@163.com
+* @Description: this util is intend to do hdfs operations.
+* @author wangjie, wangjie12@otcaix.iscas.ac.cn
 * @date Jul 16, 2013 1:12:36 PM
 * @version V1.0  
 */
@@ -29,12 +29,12 @@ import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hiveadmin.hive.beans.FileStatusBean;
 import org.springframework.stereotype.Component;
 /***
- * HDFS Utils
- * @author 
- *
+ * utils to do HDFS operations.
  */
 public class HDFSUtils {
+	
 	private String ip;
+	
 	private int port;
 
 	public String getIp() {
@@ -49,15 +49,13 @@ public class HDFSUtils {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	/**
-	 * 获取hdfs FileSystem
-	 * 
-	 * @param ip: hdfs ip
-	 * @param port: hdfs port
-	 * @return : 若获取成功,返回文件系统引用,否则返回null 
-	 */
 	private  Logger log = Logger.getLogger(HDFSUtils.class);
 	
+	/**
+	 * get hdfs FileSystem
+	 * 
+	 * @return : return a FileSystem Object if success, and null if not. 
+	 */
 	public synchronized FileSystem getFileSystem() {
 		FileSystem fs = null;
 		String url = "hdfs://" +ip + ":" + String.valueOf(port);
@@ -73,7 +71,14 @@ public class HDFSUtils {
 		}
 		return fs;
 	}
-	
+
+	/**
+	 * get hdfs FileSystem
+	 * 
+	 * @param ip: hdfs ip
+	 * @param port: hdfs port
+	 * @return : return a FileSystem Object if success, and null if not. 
+	 */
 	public synchronized static FileSystem getFileSystem(String ip,int port) {
 		FileSystem fs = null;
 		String url = "hdfs://" +ip + ":" + String.valueOf(port)+"/home/baimei";
@@ -90,10 +95,10 @@ public class HDFSUtils {
 		return fs;
 	}
 	/**
-	 * 获取datanode信息
+	 * get the informaton of datanodes
 	 * 
-	 * @param fs:文件系统引用
-	 * @return : 若获取成功返回DatanodeInfo列表,否则,若获取失败,返回null
+	 * @param fs 
+	 * @return DatanodeInfo list if success, or null if not
 	 */
 	public synchronized DatanodeInfo[] getDataNodeInfos(FileSystem fs) {
 		DistributedFileSystem dfs = (DistributedFileSystem) fs;
@@ -112,10 +117,10 @@ public class HDFSUtils {
 	}
 	
 	/**
-	 * 获取hadoop配置信息列表
+	 * get the config information of hdfs filesystem
 	 * 
 	 * @param fs
-	 * @return: 返回hdfs配置信息列表的迭代器
+	 * @return the iterator of the configEntrys
 	 */
 	public synchronized Iterator<Entry<String, String>> getConfigEntrys(FileSystem fs) {
 		Iterator<Entry<String, String>> entrys = fs.getConf().iterator();
@@ -127,12 +132,12 @@ public class HDFSUtils {
 	}
 	
 	/**
-	 * 创建文件夹.
-	 * note:若输入文件的路径已经存在,不会报错.
+	 * make dirs.
+	 * 
 	 * @param fs
-	 * @param dirName:文件路径
-	 * @param isroot:若为true,则dirName为相对于根目录的path,否则为相对于当前用户默认工作目录的path
-	 * @throws Exception:若创建失败,抛出异常.
+	 * @param dirName the file path of dir
+	 * @param isroot is true if the user is a root user.
+	 * @throws Exception failed to create the dir.
 	 * 
 	 */
 	public synchronized void mkdirs(FileSystem fs, String dirName,boolean isroot) throws Exception {
@@ -157,13 +162,12 @@ public class HDFSUtils {
 	}
 	
 	/**
-	 * 删除文件夹.
-	 * note:若路径不存在,则抛出异常
+	 * delete a given dir.
 	 * 
-	 * @param fs
-	 * @param dirName:文件的路径
-	 * @param isroot:若为true,则dirName为相对于根目录的路径,否则为相对于当前用户默认的工作目录
-	 * @throws Exception :删除失败
+	 * @param fs 
+	 * @param dirName the path of the director
+	 * @param isroot is true if the user is root user.
+	 * @throws Exception  failed to delete the given director.
 	 * 
 	 */
 	public synchronized void rmdirs(FileSystem fs, String dirName,boolean isroot) throws Exception {
@@ -189,12 +193,12 @@ public class HDFSUtils {
 	}
 	
 	/**
-	 * 创建文件
-	 * 若路径已经存在,则抛出异常
+	 * make an empty file on the HDFS FileSystem
+	 * 
 	 * @param fs
-	 * @param fileName,文件路径
-	 * @param isroot:若为true,则是相对于根目录的路径,否则为相对于当前用户默认工作目录的路径
-	 * @throws Exception 
+	 * @param fileName the path of the file 
+	 * @param isroot is true if the user is a root user
+	 * @throws Exception failed to create a new file.
 	 */
 	public synchronized void createNewFile(FileSystem fs,String fileName,boolean isroot) throws Exception{
 		String path;
@@ -219,12 +223,12 @@ public class HDFSUtils {
 	}
 
 	/**
-	 * 删除文件
-	 * 若文件不存在,则抛出异常 
+	 * delete the given file
+	 * 
 	 * @param fs
-	 * @param fileName:文件名称
-	 * @param isroot:若为true,则是相对于根目录的路径,否则为相对于当前用户默认工作目录的路径
-	 * @throws Exception :删除失败
+	 * @param fileName the name of the file to delete
+	 * @param isroot is true if the user is a root user.
+	 * @throws Exception  failed to delete the given file
 	 *
 	 */
 	public synchronized void deleteFile(FileSystem fs,String fileName,boolean isroot) throws Exception{
@@ -250,14 +254,13 @@ public class HDFSUtils {
 	}
 	
 	/**
-	 * 上传文件到hdfs
-	 * 本地文件不存在时抛出异常
+	 * upload files to the HDFS FileSystem
 	 * 
 	 * @param fs
-	 * @param local:本地文件路径
-	 * @param remote:hdfs文件路径
-	 * @param isOverWrite:是否覆盖
-	 * @param isroot:hdfs路径是否是相对于根目录
+	 * @param local the file path fo the local file
+	 * @param remote the file path to upload file to
+	 * @param isOverWrite whether to overwrite the file if a file of the same name  already exists.
+	 * @param isroot is true if the user is a root user.
 	 * @throws Exception 
 	 */
 	public synchronized void upload(FileSystem fs, String local,
@@ -283,12 +286,12 @@ public class HDFSUtils {
 	
 	
 	/**
-	 * 从hdfs下载文件到本地
+	 * download files from hdfs
 	 * @param fs
-	 * @param local:本地文件路径
-	 * @param remote:hdfs文件路径
-	 * @param isroot:hdfs文件路径是否是相对于根目录
-	 * @throws Exception :下载失败
+	 * @param local the path of the local file
+	 * @param remote the path of the hdfs file
+	 * @param isroot is true if the user is a root user.
+	 * @throws Exception  failed to donwload.
 	 */
 	public synchronized void download(FileSystem fs, String local,
 			String remote,boolean isroot) throws Exception {
@@ -311,12 +314,12 @@ public class HDFSUtils {
 	}
 	
 	/**
-	 * 重命名文件或文件夹
+	 * to rename a file or a dir
 	 * 
 	 * @param fs
-	 * @param oldName:文件或文件夹原名
-	 * @param newName:文件或文件夹新名
-	 * @throws Exception:创建失败
+	 * @param oldName the original name of the file
+	 * @param newName the new name of the file
+	 * @throws Exception failed to rename the givent file
 	 */
 	public synchronized void rename(FileSystem fs,String oldName,String newName,boolean isroot) throws Exception{
 		String oldpathString,newpathString;
@@ -347,12 +350,12 @@ public class HDFSUtils {
 	
 	
 	/**
-	 * 判断文件/目录是否存在
+	 * to judge if the file exists
 	 * 
 	 * @param fs
-	 * @param dirName:文建路径
-	 * @param isroot:文件名称是否是相对于根目录
-	 * @return:若存在,返回true,否则返回false.
+	 * @param dirName the path of the file
+	 * @param isroot is true if the user is a root file
+	 * @return true if exist, or false if not
 	 * @throws IOException
 	 */
 	public synchronized boolean exists(FileSystem fs,String dirName,boolean isroot) throws IOException{
@@ -378,12 +381,12 @@ public class HDFSUtils {
 	}
 	
 	/**
-	 * 获取hdfs副本信息
+	 * get the information about the replications
 	 * 
 	 * @param fs
-	 * @param dirName:文件名称.
-	 * @param isroot:是否是相对于根目录的路径.
-	 * @return :副本数目
+	 * @param dirName the name of the file
+	 * @param isroot is true if the user is a root user.
+	 * @return the number of the replications
 	 * @throws IOException
 	 */
 	public synchronized int getrep(FileSystem fs,String dirName,boolean isroot) throws IOException{
@@ -405,13 +408,13 @@ public class HDFSUtils {
 	
 	
 	/**
-	 * 设置hdfs文件副本信息
+	 * set the replications number
 	 * 
 	 * @param fs
 	 * @param dirName
-	 * @param replication:文件副本数目
-	 * @param isroot:文件是否是相对于根目录的路径
-	 * @return :若设置成功,返回true,否则false
+	 * @param replication the number of replications
+	 * @param isroot is true if the user is a root user. 
+	 * @return  true if success
 	 * @throws IOException
 	 */
 	public synchronized boolean setrep(FileSystem fs,String fileName,short replication, boolean isroot) throws IOException{
@@ -432,12 +435,12 @@ public class HDFSUtils {
 	
 	
 	/**
-	 * 获取文件最后修改时间
+	 * get the last modification time
 	 * 
 	 * @param fs
-	 * @param dirName:文件路径
-	 * @param isroot:是否是相对于根目录的路径
-	 * @return:获取成功返回>0的数,否则返回-1
+	 * @param dirName the path of file
+	 * @param isroot is true if the user is a root user
+	 * @return the last modification time
 	 */
 	public synchronized long getLastModifyTime(FileSystem fs,String dirName,boolean isroot){
 		String pathString;
@@ -482,10 +485,10 @@ public class HDFSUtils {
 		
 	*/
 	/**
-	 * 按照大小,获取对应单位的大小
+	 * a function to convert the size
 	 * 
-	 * @param size
-	 * @return
+	 * @param  real size of byte
+	 * @return the size with proper unit
 	 */
 	public synchronized String convertSize(long size) {
 		String result = String.valueOf(size);
@@ -502,18 +505,18 @@ public class HDFSUtils {
 	}
 	
 	/**
-	 * 获取某个目录或文件的属性信息.
+	 * get the properties of the given file or dir.
 	 * 
 	 * @param fs
-	 * @param path:文件目录,若传入路径为空,则列出当前用户的默认目录
-	 * @param isroot:是否是相对于根目录的路径
-	 * @return 
+	 * @param path the path of the file
+	 * @param isroot is true if the user is a root user.
+	 * @return the file status
 	 * @throws Exception 
 	 * 
 	 */
 	public synchronized List<FileStatusBean> listFileStatus(FileSystem fs, String path,boolean isroot) throws Exception {
-		log.info("<<<<<<<<<hdfsutil listfilestatus:");
-		log.info("param.[path:"+path);
+		log.debug("<<<<<<<<<hdfsutil listfilestatus:");
+		log.debug("param.[path:"+path);
 		if (null == path || path.trim().length()==0){
 			path="/";
 			log.info("param path is null, reset path to root path:/");
@@ -527,7 +530,7 @@ public class HDFSUtils {
 		try {
 			String relativePath = "";
 			if(fs==null){
-				System.out.println("************************fs is null");
+				log.warn("fs is null");
 			}
 			FileStatus[] flistStatus = fs.listStatus(dst);
 			List<FileStatusBean> filstStatusBeans = new ArrayList<FileStatusBean>();
@@ -636,13 +639,12 @@ public class HDFSUtils {
 		//}
 		//URI uri = new URI("htfs://127.0.0.1:9000/haha/xx/");
 		//System.out.println(new File(uri.getPath()).getParent());
-}
+	}
 	/** 
-	* @Title: isDirectory 
-	* @Description: TODO
-	* @param @param path
-	* @param @return    设定文件 
-	* @return boolean    返回类型 
+	* judge the file if it is a dir 
+	*
+	* @param path the path to judge 
+	* @return true if the give file is a director, false if not
 	* @throws 
 	*/
 	public boolean isDirectory(Path path) {

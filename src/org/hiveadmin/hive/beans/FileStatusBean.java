@@ -25,28 +25,63 @@ import org.apache.log4j.Logger;
 import org.aspectj.apache.bcel.generic.NEW;
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hiveadmin.hdfs.utils.HDFSUtils;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.mysql.jdbc.log.Log;
 
 /**
- * @ClassName FileStatusBean
- * @Description TODO
+ * FileStatusBean
+ * to record file infomations
  * @author wangjie wangjie370124@163.com
  * @date Aug 15, 2013 7:20:13 PM
  */
 @Component
+@Scope("prototype")
 public class FileStatusBean {
+	/**
+	 * owner of the hdfs file
+	 */
 	private String owner;
+	/**
+	 * path of the hdfs file
+	 */
 	private Path path;
+	/**
+	 * basePath of the hdfs file
+	 */
 	private String basePath;
+	/**
+	 * blockSize of the hdfs file
+	 */
 	private long blockSize;
+	/**
+	 * group  of the hdfs file
+	 */
 	private String group;
+	/**
+	 * len of the hdfs file
+	 */
 	private long len;
+	/**
+	 * accessTime of the hdfs file
+	 */
 	private Date accessTime;
+	/**
+	 * modificationTime of the hdfs file
+	 */
 	private String modificationTime;
+	/**
+	 * mark the file if it is a derector
+	 */
 	private boolean isDir;
+	/**
+	 * hdfsUtils to do some hdfs operations
+	 */
 	private static HDFSUtils hdfsUtils;
+	/**
+	 * log
+	 */
 	Logger log = Logger.getLogger(FileStatusBean.class);
 	
 	public String getBasePath() {
@@ -126,8 +161,16 @@ public class FileStatusBean {
 	public void setModificationTime(String modificationTime) {
 		this.modificationTime = modificationTime;
 	}
+	/**
+	 * constructor
+	 */
 	public FileStatusBean(){}
 	
+	/**FileStatusBean
+	 * <p>constructor to create a FileStatusBean<br>
+	 * @param status
+	 * @throws URISyntaxException
+	 */
 	public FileStatusBean(FileStatus status) throws URISyntaxException{
 		System.out.println("==========status");
 		this.path = status.getPath();

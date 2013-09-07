@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 
 /**
  * @ClassName HiveSqlTemplateBean
- * @Description TODO
+ * to record the hive sql template infomation
  * @author wangjie wangjie370124@163.com
  * @date Jul 20, 2013 4:49:57 PM
  */

@@ -37,7 +37,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 /**
  * @ClassName HDFSOperationAction
- * @Description TODO
+ * this action is intend to HDFS operations
  * @author wangjie wangjie370124@163.com
  * @date Jul 20, 2013 10:20:35 AM
  */
@@ -45,52 +45,130 @@ import com.opensymphony.xwork2.ActionSupport;
 @Scope("session")
 public class HDFSOperationAction extends ActionSupport {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * hdfsUtils to do relative operations
+	 */
 	HDFSUtils hdfsUtils;
+	
+	/**
+	 * dirName
+	 */
 	private String dirName;
+	/**
+	 * errorMsg to return to the views
+	 */
 	private String errorMsg;
+	/**
+	 * mark the user if he is a admin user
+	 */
 	private boolean isroot;
+	/**
+	 * fileName
+	 */
 	private String fileName;
+	/**
+	 * remotepath
+	 */
 	private String remotepath;
+	/**
+	 * remoteFileName
+	 */
+	/**
+	 * remoteFileName
+	 */
 	private String remoteFileName;
+	/**
+	 * localpath
+	 */
 	private String localpath;
 	
+	/**
+	 * newName
+	 */
 	private String newName;
+	/**
+	 * oldName
+	 */
 	private String oldName;
+	/**
+	 * listfilepath
+	 */
 	private String listfilepath;
+	/**
+	 * listfilepathparent
+	 */
 	private String listfilepathparent;
 	
+	/** 
+	* getListfilepathparent 
+	*  
+	* @param listfilepath
+	* @return the parent file the path to list
+	* @throws 
+	*/
 	public String getListfilepathparent() {
 		this.listfilepathparent = (new File(this.listfilepath)).getParent();
 		if(this.listfilepath==null)
 			this.listfilepath="/";
 		return this.listfilepathparent;
 	}
+	
+	/** 
+	* @Title: setListfilepathparent 
+	* @Description: TODO
+	* @param listfilepathparent
+	*/
 	public void setListfilepathparent(String listfilepathparent) {
 		this.listfilepathparent = listfilepathparent;
 	}
+	/**
+	 * title
+	 */
 	private String title;
+	/**
+	 * upload
+	 */
 	private File upload;
+	/**
+	 * uploadContentType
+	 */
 	private String uploadContentType;
+	/**
+	 * uploadFileName
+	 */
 	private String uploadFileName;
 	
+	/**
+	 * log
+	 */
 	Logger log = Logger.getLogger(HDFSOperationAction.class);
+	/**
+	 * fileStatusArray
+	 */
 	private List<FileStatusBean> fileStatusArray;
+	/**
+	 * savePath
+	 */
 	private String savePath;
+	/**
+	 * listfilepathfreg
+	 */
 	private List<File> listfilepathfreg;
-		
+
 	public List<File> getListfilepathfreg() {
 		return listfilepathfreg;
 	}
+	
 	public void setListfilepathfreg(List<File> listfilepathfreg) {
 		this.listfilepathfreg = listfilepathfreg;
 	}
+	
 	public String getListfilepath() {
 		return listfilepath;
 	}
+	
 	public void setListfilepath(String listfilepath) {
 		this.listfilepath = listfilepath;
 	}
@@ -200,6 +278,13 @@ public class HDFSOperationAction extends ActionSupport {
 	}
 	
 	
+	/** 
+	* judgeRoot 
+	* <p>judge if the current user is an administrator<br>
+	* @param     设定文件 
+	* @return void    返回类型 
+	* @throws 
+	*/
 	public void judgeRoot(){
 		User curUser = (User)ServletActionContext.getContext().getSession().get("userInfo");
 		if(curUser.getUsergroup().equals("admin")){
@@ -211,6 +296,11 @@ public class HDFSOperationAction extends ActionSupport {
 		}
 	}
 	
+	/** 
+	* mkdirs 
+	* <p>create a derector<br>
+	*  
+	*/
 	public String mkdirs(){
 		try {
 			judgeRoot();
@@ -225,6 +315,10 @@ public class HDFSOperationAction extends ActionSupport {
 		log.info("mkdirs success. [dirName:"+dirName+"]");
 		return SUCCESS;
 	}
+	/** 
+	* deletedirs 
+	* <p>delete the given dir<br>
+	*/
 	public String deletedirs(){
 		judgeRoot();
 		try {
@@ -238,6 +332,11 @@ public class HDFSOperationAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	/** 
+	* mkfile 
+	* <p>create a dir<br>
+	* 
+	*/
 	public String mkfile(){
 		judgeRoot();
 		try {
@@ -250,6 +349,11 @@ public class HDFSOperationAction extends ActionSupport {
 		log.info("mkfile success. [fileName:"+fileName+"]");
 		return SUCCESS;
 	}
+	
+	/** 
+	* deletefile 
+	* <p>delete the givne file<br>
+	*/
 	public String deletefile(){
 		judgeRoot();
 		try {
@@ -262,6 +366,11 @@ public class HDFSOperationAction extends ActionSupport {
 		log.info("delete file success. [fileName:"+fileName+"]");
 		return SUCCESS;
 	}
+	/** 
+	* uploadfile 
+	* <p>to upload a file<br>
+	* 
+	*/
 	public String uploadfile(){
 		judgeRoot();
 		String tempFilePath = null;
@@ -294,6 +403,10 @@ public class HDFSOperationAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	/** 
+	* getDownloadfile 
+	* <p>to doload a file<br>
+	*/
 	public InputStream getDownloadfile(){
 		judgeRoot();
 		String tempFilePath = null;
@@ -313,6 +426,10 @@ public class HDFSOperationAction extends ActionSupport {
 		}
 	}
 
+	/** 
+	* renamefile 
+	* <p>to rename a file<br>
+	*/
 	public String renamefile(){
 		judgeRoot();
 		try {
@@ -326,6 +443,10 @@ public class HDFSOperationAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+	/** 
+	* listFileStatus 
+	* <p> to get the list of the file propertises<br>
+	*/
 	public String listFileStatus(){
 		judgeRoot();
 		try {
@@ -343,12 +464,10 @@ public class HDFSOperationAction extends ActionSupport {
 		}
 		return SUCCESS;
 	}
+	
 	/** 
-	* @Title: getFilePathFreg 
-	* @Description: TODO
-	* @param @return    设定文件 
-	* @return Object    返回类型 
-	* @throws 
+	* getFilePathFreg 
+	* <p>to get the list of file fregments.<br> 
 	*/
 	private List<File> getFilePathFreg(String path) {
 		//judgeRoot();

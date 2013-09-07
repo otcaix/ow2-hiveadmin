@@ -17,21 +17,39 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * @ClassName HistoryRecordForProcess
- * @Description TODO
+ * HistoryRecordForProcess
+ * do history record for special operations. such as the local hive cli query. It will log the operation util it is accomplished
  * @author wangjie wangjie370124@163.com
  * @date Aug 17, 2013 3:21:55 PM
  */
 @Component(value="historyRecordForProcess")
 @Scope("prototype")
 public class HistoryRecordForProcess extends Thread{
+	/**
+	 * userHistoryLog
+	 */
 	private UserHistoryLog userHistoryLog;
+	/**
+	 * log
+	 */
 	private Logger log = Logger.getLogger(HistoryRecordForProcess.class);
+	/**
+	 * historyRecord
+	 */
 	private HistoryRecord historyRecord;
+	/**
+	 * process
+	 */
 	private Process process;
 	
+	/**
+	 * Constructor
+	 */
 	public HistoryRecordForProcess(){}
 	
+	/**
+	 * Constructor
+	 */
 	public HistoryRecordForProcess(HistoryRecord record,Process p){
 		this.historyRecord = record;
 		this.process = p;
@@ -62,13 +80,17 @@ public class HistoryRecordForProcess extends Thread{
 		this.historyRecord = historyRecord;
 	}
 
+	/* *
+	 * open a thread to wait util the hive cli query is done. and then add the record;
+	 * @see java.lang.Thread#run()
+	 */
 	@Override
 	public void run() {
-		log.warn("record thred...........run");
+		log.debug("record thred...........run");
 		try {
-			log.warn("record thred...........<<wait for:");
+			log.debug("record thred...........<<wait for:");
 			process.waitFor();
-			log.warn("record thred...........>>wait for");
+			log.debug("record thred...........>>wait for");
 		} catch (InterruptedException e) {
 			log.warn("failed to excecute cmd. exception message:"+e.getMessage());
 		}
@@ -79,17 +101,17 @@ public class HistoryRecordForProcess extends Thread{
 			log.error("failed to do record. process is not rightly exit.");
 		}
 		if(exitvalue==0){
-			log.warn("record thred...........exitvalue:0");
+			log.debug("record thred...........exitvalue:0");
 			if(historyRecord==null){
-				log.warn("=============historyRecord is null");
+				log.debug("=============historyRecord is null");
 			}
 			historyRecord.setOp_res(true);
 		}else{
-			log.warn("record thred...........exitvalue: !0");
+			log.debug("record thred...........exitvalue: !0");
 			historyRecord.setOp_res(false);
 		}
-		log.warn("record thred...........add history");
-		log.warn("check userHistoryLog==null?"+(userHistoryLog==null));
+		log.debug("record thred...........add history");
+		log.debug("check userHistoryLog==null?"+(userHistoryLog==null));
 		this.userHistoryLog.addHistotyRecord(historyRecord); 
 	}
 }

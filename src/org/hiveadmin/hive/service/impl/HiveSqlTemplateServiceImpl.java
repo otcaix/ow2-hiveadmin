@@ -29,17 +29,19 @@ import org.hiveadmin.hive.beans.HiveSqlTemplateBean;
 import org.hiveadmin.hive.dao.rowmap.HiveSqlTemplateRowMapper;
 import org.hiveadmin.hive.hiveutils.HiveConnectionBean;
 import org.hiveadmin.hive.service.HiveSqlTemplateService;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 
 /**
- * @ClassName HiveSqlTemplateServiceImpl
- * @Description TODO
+ * HiveSqlTemplateServiceImpl
+ * 
  * @author wangjie wangjie370124@163.com
  * @date Jul 20, 2013 5:01:02 PM
  */
 @Component(value="hiveSqlTemplateService")
+@Scope("prototype")
 public class HiveSqlTemplateServiceImpl implements HiveSqlTemplateService {
 	
 	private JdbcTemplate jdbcTemplate;

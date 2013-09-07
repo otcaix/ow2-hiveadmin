@@ -23,8 +23,8 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class HiveSqlTemplateRowMapper implements RowMapper {
 
-	/* (non-Javadoc)
-	 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)
+	/* mapRow
+	 * to map database record to a hive sql template bean
 	 */
 	@Override
 	public Object mapRow(ResultSet res, int arg1) throws SQLException {

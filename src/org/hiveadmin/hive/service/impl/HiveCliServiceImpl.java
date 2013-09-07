@@ -39,8 +39,8 @@ import org.springframework.stereotype.Component;
 import com.opensymphony.xwork2.Result;
 
 /**
- * @ClassName HiveCliServiceImpl
- * @Description TODO
+ * HiveCliServiceImpl
+ * hivcli operations
  * @author wangjie wangjie370124@163.com
  * @date Aug 12, 2013 9:58:23 AM
  */
@@ -79,6 +79,9 @@ public class HiveCliServiceImpl implements HiveCliService {
 		}
 		return contextPath;
 	}
+	/* (non-Javadoc)
+	 * @see org.hiveadmin.hive.service.HiveCliService#setContextPath(java.lang.String)
+	 */
 	@Override
 	public void setContextPath(String contextPath) {
 		log.debug("set context path:"+contextPath);
@@ -88,6 +91,9 @@ public class HiveCliServiceImpl implements HiveCliService {
 	public String getDataPath(){
 		return this.getContextPath()+File.separator+"data"+File.separator;
 	}
+	/* (non-Javadoc)
+	 * @see org.hiveadmin.hive.service.HiveCliService#cliQuery(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void cliQuery(String database, String sql, String fingerPrint) throws IOException{
 		log.info("params[database:"+database+"][sql:"+sql+"][fingerPrint:"+fingerPrint+"]");
@@ -122,6 +128,9 @@ public class HiveCliServiceImpl implements HiveCliService {
 		this.historyRecordForProcess.start();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.hiveadmin.hive.service.HiveCliService#getResult(java.lang.String)
+	 */
 	@Override
 	public String getResult(String fingerPrint) throws Exception {
 		try {
@@ -154,6 +163,9 @@ public class HiveCliServiceImpl implements HiveCliService {
 		return rf.read(statusFile, lastReadSize,maxline);
 		
 	}
+	/* (non-Javadoc)
+	 * @see org.hiveadmin.hive.service.HiveCliService#getQueryStatusBean(java.lang.String, org.hiveadmin.hive.beans.RealTimeReadFileBean, long, int)
+	 */
 	@Override
 	public void getQueryStatusBean(String fingerPrint,RealTimeReadFileBean bean, long lastReadSize,int maxline) {
 		RealTimeReadFile rf = new RealTimeReadFile();

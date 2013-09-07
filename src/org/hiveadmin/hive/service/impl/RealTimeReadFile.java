@@ -20,8 +20,8 @@ import org.hiveadmin.hive.beans.RealTimeReadFileBean;
 import com.mysql.jdbc.log.Log;
 
 /**
- * @ClassName RealTimeReadFile
- * @Description TODO
+ * RealTimeReadFile
+ * a util to read growing files
  * @author wangjie wangjie370124@163.com
  * @date Aug 13, 2013 5:42:13 PM
  */
@@ -29,6 +29,14 @@ public class RealTimeReadFile {
 	
 	private Logger log = Logger.getLogger(RealTimeReadFile.class);
 	
+	/** 
+	* read 
+	* <p>to read a growing file<br>
+	* @param file  the file path to read
+	* @param maxline maxline to read at one time
+	* @return result content
+	* 
+	*/
 	public String read(File file, long lastReadSize,int maxline){
 		if(maxline<0){
 			return null;
@@ -38,11 +46,11 @@ public class RealTimeReadFile {
 		
 		try {
 			rFile = new RandomAccessFile(file, "r");
-			System.out.println("file size:"+rFile.length());
-			System.out.println("find lastRead:"+lastReadSize);
+			log.debug("file size:"+rFile.length());
+			log.debug("find lastRead:"+lastReadSize);
 			rFile.seek(lastReadSize);
 		} catch (IOException e1) {
-			System.out.println("get exception.");
+			
 			log.warn("file not exist or can not be accessed. [filepath:"+file.getPath()+"]");
 			return null;
 		}
@@ -51,15 +59,15 @@ public class RealTimeReadFile {
 		int i = 0 ;
 		try {
 			while(i<maxline && (tmp = rFile.readLine())!=null){
-				System.out.println("cur read String:"+retString);
-				System.out.println("new readline:"+tmp);
+				log.debug("cur read String:"+retString);
+				log.debug("new readline:"+tmp);
 				retString +="\n"+ tmp;
 				i = i+1;
 			}
 			rFile.close();
 			log.debug("return status lines:"+retString);
-			System.out.println("return string:"+retString);
-			System.out.println("return string size:"+retString.length());
+			log.debug("return string:"+retString);
+			log.debug("return string size:"+retString.length());
 			return retString;
 		} catch (IOException e) {
 			log.warn("got exception while reading status file. [filepath:"+file.getPath()+"][exception:"+e.getMessage()+"]");
@@ -67,6 +75,14 @@ public class RealTimeReadFile {
 		}
 			
 	}
+	/** 
+	* readLines 
+	* <p>to read a growing file<br>
+	* @param file the path to read
+	* @param bean record the infomation about the reading
+	* @param maxline the maxlien to read at one time
+	* 
+	*/
 	public void readLines(File file, RealTimeReadFileBean bean,int maxline){
 		bean.getLines().clear();
 		if(maxline<0){
@@ -89,7 +105,7 @@ public class RealTimeReadFile {
 		try {
 			tmp = rFile.readLine();
 			if(tmp==null){
-				log.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&EOF");
+				log.debug("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&EOF");
 			}
 		} catch (IOException e) {
 			log.warn("failed to readline from file. [exception message"+e.getMessage()+"]");

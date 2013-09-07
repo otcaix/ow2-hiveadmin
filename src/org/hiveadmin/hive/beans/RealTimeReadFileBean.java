@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * @ClassName RealTimeReadFileBean
- * @Description TODO
+ * RealTimeReadFileBean
+ * to record the information of the result from reading a growing log file
  * @author wangjie wangjie370124@163.com
  * @date Aug 17, 2013 11:21:13 AM
  */
