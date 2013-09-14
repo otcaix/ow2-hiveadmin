@@ -10,6 +10,7 @@
 package org.hiveadmin.hive.beans;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * @ClassName HiveCliResPathBean
@@ -17,7 +18,7 @@ import java.io.File;
  * @author wangjie wangjie370124@163.com
  * @date Aug 12, 2013 1:24:58 PM
  */
-public class HiveCliResPathBean {
+public class HiveCliResPathBean implements Serializable{
 	public String resultPath="";
 	public String statusPath="";
 	

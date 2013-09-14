@@ -148,7 +148,7 @@
 							  <s:iterator value="fileStatusArray" id="status"> 
 								<tr>
 									<td>
-										<s:if test="dir == true"><a href=<%=request.getContextPath()+"/hdfsOperation/listFileStatus?listfilepath="%><s:property value="basePath"/>><s:property value="path.name"/></a></s:if>
+										<s:if test="#status.dir==true"><a href=<%=request.getContextPath()+"/hdfsOperation/listFileStatus?listfilepath="%><s:property value="basePath"/>><s:property value="path.name"/></a></s:if>
 										<s:else><s:property value="path.name"/></s:else>
 									</td>
 									<td><s:property value="len"/></td>
@@ -157,7 +157,7 @@
 									<td><s:property value="modificationTime"/></td>
 									<td class="centre">
 										
-										<s:if test="dir == true">
+										<s:if test="#status.dir==true">
 											
 											<a class="btn btn-danger" href=<%=request.getContextPath()+"/hdfsOperation/deletedirs?dirName="%><s:property value="basePath"/>>
 												<i class="icon-trash icon-white"></i> 

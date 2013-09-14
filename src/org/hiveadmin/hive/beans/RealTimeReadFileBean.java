@@ -9,6 +9,7 @@
 */
 package org.hiveadmin.hive.beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Component;
  * @date Aug 17, 2013 11:21:13 AM
  */
 @Component
-public class RealTimeReadFileBean {
+public class RealTimeReadFileBean implements Serializable {
 	private boolean more;
 	private List<String> lines;
 	private int lastread;

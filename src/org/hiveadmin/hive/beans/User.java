@@ -8,13 +8,15 @@
  */
 package org.hiveadmin.hive.beans;
 
+import java.io.Serializable;
+
 /**
  *This class is to describe user information.
  * @author Wangjie wangjie370124@163.com
  * @date Jul 19, 2013 9:09:26 PM
  */
 
-public class User {
+public class User implements Serializable{
 	/**           
 	 * userid:this property is the id of user         
 	 */

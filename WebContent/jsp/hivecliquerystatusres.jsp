@@ -92,7 +92,9 @@
 						<div id="hivecli_status_div" class="box-content well">
 						</div>
 						
-								
+							<a  href="<%=request.getContextPath() %>/jsp/hivecliquery.jsp" class="btn btn-primary">
+								go back
+							</a>	
 					</div>
 				</div>
 			</div>

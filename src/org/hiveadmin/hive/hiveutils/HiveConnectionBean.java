@@ -158,7 +158,7 @@ public class HiveConnectionBean {
 	public static Connection getConnection(String database) throws SQLException, ClassNotFoundException{
 		
 		Class.forName(driverName);
-		log .info("url:["+url+"]user:["+user+"]pass:["+password+"]");
+		log .info("url:["+url+"/"+database+"]user:["+user+"]pass:["+password+"]");
 		return DriverManager.getConnection(url+"/"+database, user, password);
         
 	}
@@ -181,6 +181,7 @@ public class HiveConnectionBean {
 			log.error("template content is null. do nothing");
 			throw new Exception("template content is null. do nothing");
 		}
+		log.debug("user database:"+database);
 		Connection conn = getConnection(database);
 		if(conn==null){
 			log.error("failed to get connection");
@@ -190,6 +191,7 @@ public class HiveConnectionBean {
 		log.warn("======jdbc::exe query");
 		log.warn("sql:"+sqlcmd);
 		ResultSet res = stmt.executeQuery(sqlcmd);
+		
 		if(res !=null){
 			ResultSetMetaData resmd = res.getMetaData();
 			ArrayList rows = new ArrayList();

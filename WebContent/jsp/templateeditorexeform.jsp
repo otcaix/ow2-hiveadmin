@@ -40,9 +40,9 @@
 				<button id="template_exe_btn" onclick="template_exe();return false" class="btn" type="submit">
 					execute
 				</button>
-				<button class="btn">
+				<a href="<%=request.getContextPath() %>/hiveSqlTemplate/fetchHiveSqlTemplateList" class="btn">
 					cancel
-				</button>
+				</a>
 			</div>
 			</fieldset>
 		 </form>
@@ -51,7 +51,7 @@
 	<script type="text/javascript">
 		
 		function template_exe(){
-			alert("temp_exe");
+			
 			window.location.href="jsp/hivecliquery.jsp?sql="+$("#focusedInput3").val();
 		}
 	</script>

@@ -9,6 +9,7 @@
 */
 package org.hiveadmin.hive.beans;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -17,7 +18,7 @@ import java.sql.Timestamp;
  * @author wangjie wangjie370124@163.com
  * @date Jul 20, 2013 4:49:57 PM
  */
-public class HiveSqlTemplateBean {
+public class HiveSqlTemplateBean implements Serializable{
 	private String temp_name;
 	private String owner_name;
 	private String temp_description;

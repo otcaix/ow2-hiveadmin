@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +35,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sun.xml.internal.ws.api.pipe.NextAction;
 
 /**
  * @ClassName HDFSOperationAction
@@ -43,7 +45,7 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 @Component
 @Scope("session")
-public class HDFSOperationAction extends ActionSupport {
+public class HDFSOperationAction extends ActionSupport implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -457,6 +459,14 @@ public class HDFSOperationAction extends ActionSupport {
 			}
 			log.info("get file list status.[listfilepath:]"+listfilepath);
 			fileStatusArray = hdfsUtils.listFileStatus(hdfsUtils.getFileSystem(), listfilepath, isroot);
+			System.out.println("----list filestatus");
+			
+			Iterator<FileStatusBean> it = fileStatusArray.iterator();
+			while(it.hasNext()){
+				FileStatusBean next = it.next();
+				
+				System.out.println(next.toString());
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			errorMsg = e.getMessage();

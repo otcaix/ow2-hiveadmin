@@ -105,9 +105,9 @@
 							  </tbody>
 						  </table>
 							
-							<button class="btn btn primary">
+							<a  href="<%=request.getContextPath() %>/jsp/hivecliquery.jsp" class="btn btn-primary">
 								go back
-							</button>
+							</a>
 											
 					</div>
 				</div>

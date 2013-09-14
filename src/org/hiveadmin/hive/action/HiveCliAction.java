@@ -179,6 +179,12 @@ public class HiveCliAction extends ActionSupport{
 		return user+"_"+ts;
 	}
 	
+	private boolean isempty(String s){
+		if(s==null||s.trim().length()<1){
+			return true;
+		}
+		return false;
+	}
 	
 	/** 
 	* hiveCliQuery 
@@ -191,7 +197,7 @@ public class HiveCliAction extends ActionSupport{
 		HistoryRecord historyRecord = new HistoryRecord();
 		historyRecord.setOp_user_name((String)ServletActionContext.getContext().getSession().get("user"));
 		historyRecord.setOp_desc("execute sql by hive cli.");
-		historyRecord.setOp_sql("use database "+database+";"+sql);
+		historyRecord.setOp_sql("use "+(this.isempty(database)?"default":database)+";"+sql);
 		
 		try {
 			hiveCliServiceImpl.setHistoryRecord(historyRecord);

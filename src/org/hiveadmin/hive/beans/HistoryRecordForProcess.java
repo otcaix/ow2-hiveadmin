@@ -112,6 +112,7 @@ public class HistoryRecordForProcess extends Thread{
 		}
 		log.debug("record thred...........add history");
 		log.debug("check userHistoryLog==null?"+(userHistoryLog==null));
+		log.debug("==========add historyrecord:"+historyRecord.getResultfile());
 		this.userHistoryLog.addHistotyRecord(historyRecord); 
 	}
 }

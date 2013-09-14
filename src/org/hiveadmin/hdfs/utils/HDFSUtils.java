@@ -24,6 +24,7 @@ import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hive.ql.parse.HiveParser.indexComment_return;
 import org.apache.hadoop.hive.ql.parse.HiveParser_IdentifiersParser.booleanValue_return;
 import org.apache.log4j.Logger;
+import org.apache.struts2.components.Bean;
 import org.aspectj.apache.bcel.generic.NEW;
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hiveadmin.hive.beans.FileStatusBean;
@@ -535,7 +536,9 @@ public class HDFSUtils {
 			FileStatus[] flistStatus = fs.listStatus(dst);
 			List<FileStatusBean> filstStatusBeans = new ArrayList<FileStatusBean>();
 			for(FileStatus status : flistStatus){
-				filstStatusBeans.add(new FileStatusBean(status));
+				FileStatusBean bean = new FileStatusBean(status);
+				filstStatusBeans.add(bean);
+				System.out.println(bean.toString());
 			}
 			log.info("get fileListStatus. dirname:"+dst);
 			return filstStatusBeans;

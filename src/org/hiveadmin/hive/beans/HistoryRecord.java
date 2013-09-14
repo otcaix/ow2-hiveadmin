@@ -9,6 +9,7 @@
 */
 package org.hiveadmin.hive.beans;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -17,7 +18,7 @@ import java.sql.Timestamp;
  * @author wangjie wangjie370124@163.com
  * @date Jul 19, 2013 8:41:27 PM
  */
-public class HistoryRecord {
+public class HistoryRecord implements Serializable{
 	
 	/**           
 	 * op_record_id:this property is the id of this operation         

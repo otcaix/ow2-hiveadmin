@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.hiveadmin.hive.beans.HistoryRecord;
 import org.hiveadmin.hive.beans.HistoryRecordForProcess;
 import org.hiveadmin.hive.beans.RealTimeReadFileBean;
+import org.hiveadmin.hive.dao.impl.UserHistoryLog;
 import org.hiveadmin.hive.service.HiveCliService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -56,20 +57,27 @@ public class HiveCliServiceImpl implements HiveCliService {
 
 	private HistoryRecord historyRecord;
 
-	private HistoryRecordForProcess historyRecordForProcess;
+	//private HistoryRecordForProcess historyRecordForProcess;
 	
+	private UserHistoryLog userHistoryLog;
 	
-	
-	public HistoryRecordForProcess getHistoryRecordForProcess() {
-		return historyRecordForProcess;
+	public UserHistoryLog getUserHistoryLog() {
+		return userHistoryLog;
 	}
-	@Resource(name="historyRecordForProcess")
-	public void setHistoryRecordForProcess(
-			HistoryRecordForProcess historyRecordForProcess) {
-		log.warn("set historyRecordForProcess for HiveCliServiceImpl");
-		log.warn("historyRecordForProcess==null?"+(historyRecordForProcess==null));
-		this.historyRecordForProcess = historyRecordForProcess;
+	@Resource
+	public void setUserHistoryLog(UserHistoryLog userHistoryLog) {
+		this.userHistoryLog = userHistoryLog;
 	}
+	//	public HistoryRecordForProcess getHistoryRecordForProcess() {
+//		return historyRecordForProcess;
+//	}
+//	@Resource(name="historyRecordForProcess")
+//	public void setHistoryRecordForProcess(
+//			HistoryRecordForProcess historyRecordForProcess) {
+//		log.warn("set historyRecordForProcess for HiveCliServiceImpl");
+//		log.warn("historyRecordForProcess==null?"+(historyRecordForProcess==null));
+//		this.historyRecordForProcess = historyRecordForProcess;
+//	}
 	public HistoryRecord getHistoryRecord() {
 		return historyRecord;
 	}
@@ -121,11 +129,13 @@ public class HiveCliServiceImpl implements HiveCliService {
 		Process p = pb.start();
 		historyRecord.setResultfile(fingerPrint);
 		
-		log.warn("recordThread start");
-		this.historyRecordForProcess.setHistoryRecord(historyRecord);
-		this.historyRecordForProcess.setProcess(p);
+		log.info("=====add hive cli historyrecord."+historyRecord.getOp_sql()+";resfile"+historyRecord.getResultfile());
+		this.userHistoryLog.addHistotyRecord(historyRecord);
+		//log.warn("recordThread start");
+		//this.historyRecordForProcess.setHistoryRecord(historyRecord);
+		//this.historyRecordForProcess.setProcess(p);
 		
-		this.historyRecordForProcess.start();
+		//this.historyRecordForProcess.start();
 	}
 
 	/* (non-Javadoc)

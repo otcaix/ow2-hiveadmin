@@ -22,9 +22,9 @@
 				<button class="btn btn-primary" type="submit">
 					create
 				</button>
-				<button class="btn">
+				<a href="<%=request.getContextPath() %>/hdfsOperation/listFileStatus" class="btn">
 					cancel
-				</button>
+				</a>
 			</div>
 			</fieldset>
 		 </form>

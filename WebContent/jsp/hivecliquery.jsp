@@ -121,7 +121,7 @@
 								</div>
 							</div>
 							<div class="control-group">
-								<label class="control-label" for="hivecli_sql">sql</label>
+								<label class="control-label" for="hivecli_sql">sql * </label>
 								<div class="controls">
 								  <textarea name="sql" id="hivecli_sql" rows="10">
 								  	

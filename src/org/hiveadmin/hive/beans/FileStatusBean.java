@@ -11,6 +11,7 @@ package org.hiveadmin.hive.beans;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -38,7 +39,7 @@ import com.mysql.jdbc.log.Log;
  */
 @Component
 @Scope("prototype")
-public class FileStatusBean {
+public class FileStatusBean implements Serializable{
 	/**
 	 * owner of the hdfs file
 	 */
@@ -74,7 +75,7 @@ public class FileStatusBean {
 	/**
 	 * mark the file if it is a derector
 	 */
-	private boolean isDir;
+	private boolean dir;
 	/**
 	 * hdfsUtils to do some hdfs operations
 	 */
@@ -98,14 +99,12 @@ public class FileStatusBean {
 		this.hdfsUtils = hdfsUtils;
 	}
 
-	public boolean getDir() throws IOException {
-		return hdfsUtils.isDirectory(this.path);
+	public boolean getDir() {
+		return dir;
 	}
-
-	public void setDir(boolean isDir) {
-		this.isDir = isDir;
+	public void setDir(boolean dir) {
+		this.dir = dir;
 	}
-
 	public String getOwner() {
 		return owner;
 	}
@@ -183,12 +182,19 @@ public class FileStatusBean {
 		}
 		this.basePath = uri.getPath();
 		this.blockSize = status.getBlockSize();
+		this.dir = status.isDir();
+		
 		this.len = status.getLen();
 		this.owner = status.getOwner();
 		this.group = status.getGroup();
 		this.accessTime = new Date(status.getAccessTime());
 		this.modificationTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date(status.getModificationTime()));
-		System.out.println(this.path);
+		
+	}
+	@Override
+	public String toString(){
+		
+		return "path:"+this.path.toString()+";basepath:"+this.basePath+";blocksize:"+this.blockSize+";this.dir:"+this.dir+";owner:"+this.owner;
 	}
 	
 }
