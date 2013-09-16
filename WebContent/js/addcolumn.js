@@ -7,11 +7,11 @@ $(document).ready(
 
 						var id = 'cols_' + num;
 
-						$('div#cols_-1').clone(true).attr('id', id).removeAttr(
-								"style").insertAfter('div#cols');
-						var id1 = 'div#' + id + '  #cols_name';
-						var id2 = 'div#' + id + '  #cols_type';
-						var id3 = 'div#' + id + '  #cols_comment';
+						$('tr#cols_-1').clone(true).attr('id', id).removeAttr(
+								"style").insertAfter('table#cols');
+						var id1 = 'tr#' + id + '  #cols_name';
+						var id2 = 'tr#' + id + '  #cols_type';
+						var id3 = 'tr#' + id + '  #cols_comment';
 						var name1 = 'columns[' + num + '].cols_name';
 						var name2 = 'columns[' + num + '].cols_type';
 						var name3 = 'columns[' + num + '].cols_comment';
@@ -27,7 +27,7 @@ $(document).ready(
 
 				num = num - 1;
 				if (num >= 1) {
-					var id = 'div#cols_' + num;
+					var id = 'tr#cols_' + num;
 					$(id).remove();
 					$('p#column_num').text(num);
 				}
@@ -39,11 +39,11 @@ $(document).ready(
 
 						var id = 'P_cols_' + num;
 
-						$('div#P_cols_-1').clone(true).attr('id', id)
-								.removeAttr("style").insertAfter('div#P_cols');
-						var id1 = 'div#' + id + '  #cols_name';
-						var id2 = 'div#' + id + '  #cols_type';
-						var id3 = 'div#' + id + '  #cols_comment';
+						$('tr#P_cols_-1').clone(true).attr('id', id)
+								.removeAttr("style").insertAfter('table#P_cols');
+						var id1 = 'tr#' + id + '  #cols_name';
+						var id2 = 'tr#' + id + '  #cols_type';
+						var id3 = 'tr#' + id + '  #cols_comment';
 
 						var name1 = 'P_columns[' + num + '].cols_name';
 						var name2 = 'P_columns[' + num + '].cols_type';
@@ -60,7 +60,7 @@ $(document).ready(
 
 				num = num - 1;
 				if (num >= 0) {
-					var id = 'div#P_cols_' + num;
+					var id = 'tr#P_cols_' + num;
 					$(id).remove();
 					$('p#P_column_num').text(num);
 				}

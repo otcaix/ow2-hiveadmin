@@ -93,7 +93,7 @@
 
 						<div class="box-content">
 							<p class="btn-group">
-								<a class="btn btn-success" href='tableaction/tablelist?database_name=<s:property value="%{#parameters.database_name}"/>'>
+								<a class="btn btn-success" href='tableaction/tablelist?database_name=<s:property value="%{#session.DBname}"/>'>
 											<i class="icon-arrow-left icon-white"></i>  
 											back                                            
 										</a>
@@ -108,7 +108,7 @@
 									
 									<s:text name="Database name" />
 									<s:textfield name="database_name"
-										value="%{#parameters.database_name}" readonly="true" />
+										value="%{#session.DBname}" readonly="true" />
 									<br>
 									<s:text name="File path"></s:text>
 									<s:textfield name="inpath"></s:textfield>
@@ -130,28 +130,29 @@
 								 <fieldset class="form-inline">
 									<legend>Load File into Some Partition of Table </legend>
 									<div id="P_cols">
-										<p id="partition_spec_num" align="left">0</p>
+										<p id="partition_spec_num" align="left" style="display:none">0</p>
 										
 										<div id="partition_spec_cols_-1" style="display: none">
-											<s:text name="Column name" />
+											<s:text name="Partition name" />
 											<s:textfield id="partition_spec_name" />
 											
-											<s:text name="Column Value" />
+											<s:text name="Partition Value" />
 											<s:textfield id="partition_spec_value" />
 											<br>
 
 										</div>
 									</div>
 
-									   <input type="button" id="newpartition_spec" value="Add Partition spec" /> <input
-										type="button" id="removepartition_spec" value="Remove Partition spec" />
+									   <input type="button" id="newpartition_spec" class=" btn btn-small btn-warning" value="Add Partition spec" /> <input
+										type="button" id="removepartition_spec" class="btn btn-small btn-info"  value="Remove Partition spec" />
+										
 								</fieldset> 
 								<p>
 				
 								
 								<div class="form-actions">
 									<button id="loadfile" class="btn btn-small btn-success" type="submit">Load into table</button>
-									<button class="btn">Cancel</button>
+								
 								</div>
 
 							</form>

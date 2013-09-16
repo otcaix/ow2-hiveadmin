@@ -93,7 +93,7 @@
 
 						<div class="box-content">
 							<p class="btn-group">
-								<a class="btn btn-small btn-primary" href='tableaction/tabledetail?database_name=<s:property value="%{#parameters.database_name}"/>&table_name=<s:property value="%{#parameters.table_name}"/>'>
+								<a class="btn btn-small btn-primary" href='tableaction/tabledetail?database_name=<s:property value="%{#session.DBname}"/>&table_name=<s:property value="%{#session.TBname}"/>'>
 											<i class="icon-arrow-left icon-white"></i>   
 											back                                            
 										</a>
@@ -104,12 +104,12 @@
 								<fieldset>
 									<legend></legend>
 										<s:text name="table name" />
-									<s:textfield name="table_name" value="%{#parameters.table_name}" readonly="true"/>
+									<s:textfield name="table_name" value="%{#session.TBname}" readonly="true"/>
 									<br>
 							
 									<s:text name="Database name" />
 									<s:textfield name="database_name"
-										value="%{#parameters.database_name}" readonly="true" />
+										value="%{#session.DBname}" readonly="true" />
 									<br>
 									  <s:text name="Column old name" />
 										<s:textfield id="cols_name" name="col_old_name" value="%{#parameters.col_old_name}" readonly="true"/>
@@ -120,7 +120,7 @@
 										<s:textfield id="cols_name" name="col_new_name" />
 										<br>
 										<s:text name="New Column type" />
-										<s:select id="cols_type" list="#{'int':'Int'}"
+										<s:select id="cols_type" list="#{'TINYINT':'TINYINT','SMALLINT':'SMALLINT',' INT':'INT','BIGINT':'BIGINT','BOOLEAN':'BOOLEAN','FLOAT':'FLOAT','DOUBLE':'DOUBLE','BINARY':'BINARY','TIMESTAMP':'TIMESTAMP','DECIMAL':'DECIMAL'}" 
 											name="col_new_type" listKey="key" listValue="value"
 											headerKey="String" headerValue="String"></s:select>
 										<s:text name="New Column comment" />
@@ -131,7 +131,7 @@
 								
 								<div class="form-actions">
 									<button class="btn btn-small btn-primary" type="submit"><i class="icon-ok icon-white"></i>Alter</button>
-									<button class="btn">cancel</button>
+									
 								</div>
 
 							</form>

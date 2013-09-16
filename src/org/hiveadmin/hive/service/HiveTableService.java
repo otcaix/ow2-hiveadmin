@@ -292,5 +292,7 @@ public interface HiveTableService {
 	 */
 	public abstract void cloneTable(String database_name, String table_name,
 			String to_database_name, String table_new_name) throws Exception;
-
+	
+/*	public abstract HashMap<String, String>  showPartition(String table_name,String database_name) throws Exception ;
+*/
 }

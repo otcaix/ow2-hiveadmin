@@ -177,6 +177,7 @@ public class HiveTableServiceImpl implements HiveTableService {
 
 		}
 		System.out.println("database name:" + database_name);
+		
 		if (!skewed_col_names.isEmpty()) {
 			sql = sql + " skewed by (";
 			Iterator<String> p_entries = skewed_col_names.iterator();
@@ -199,6 +200,7 @@ public class HiveTableServiceImpl implements HiveTableService {
 			sql = sql + " ) ";
 
 		}
+		sql=sql+"ROW FORMAT DELIMITED  FIELDS TERMINATED BY '\\t' COLLECTION ITEMS TERMINATED BY '\\s'";
 
 		if (!(exist_table_or_view_name == null || exist_table_or_view_name
 				.equals(""))) {
@@ -795,6 +797,7 @@ public class HiveTableServiceImpl implements HiveTableService {
 
 		Statement stmt = HiveConnectionBean.getStmt();
 		stmt.execute("use " + database_name);
+		System.out.println(sql);
 		stmt.execute(sql);
 		stmt.close();
 		HistoryRecord historyRecord = new HistoryRecord();
@@ -808,7 +811,35 @@ public class HiveTableServiceImpl implements HiveTableService {
 		log.info("Sucess to excute:" + sql);
 
 	}
+	/*@Override
+	public HashMap<String, String>  showPartition(String table_name,String database_name) throws Exception {
+		String sql = "SHOW PARTITIONS  "+ table_name;
+		
+		Statement stmt = HiveConnectionBean.getStmt();
+		stmt.execute("use " + database_name);
+		HashMap<String, String> map = new LinkedHashMap<String, String>();
 
+		ResultSet res = stmt.executeQuery(sql);
+		while (res.next()) {
+			map.put(res.getString(1), res.getString(1));
+
+		}
+		res.close();
+		
+		stmt.close();
+		HistoryRecord historyRecord = new HistoryRecord();
+		historyRecord.setOp_user_name((String) ServletActionContext
+				.getContext().getSession().get("user"));
+		historyRecord.setOp_desc(" show partition table:" + table_name
+				+ "  in database:" + database_name);
+		historyRecord.setOp_res(true);
+		historyRecord.setOp_sql(sql);
+		userHistoryLog.addHistotyRecord(historyRecord);
+		log.info("Sucess to excute:" + sql);
+		return map;
+
+	}
+*/
 	 /**
 	  *cloneTo 
 	  * @return

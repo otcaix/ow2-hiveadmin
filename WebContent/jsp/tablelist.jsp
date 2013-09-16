@@ -93,12 +93,12 @@
 							<a href="#" class="btn btn-close btn-round"><i class="icon-remove"></i></a>
 						</div>
 					</div>
-
+				
 					<div class="box-content">	
 							<!-- <p class="btn-group">
 								<button id="table_create" class="btn btn-primary btn-round" onclick="create_table()">create table</button>
 							</p> -->
-							<p><a class="btn btn-small btn-primary" href='jsp/createtableform.jsp?database_name=<s:property value="database_name"/>'>
+							<p><a class="btn btn-small btn-primary" href='jsp/createtableform.jsp?database_name="%{#session.DBname}"'>
 											<i class="icon-plus icon-white"></i>  
 											Create Table                                           
 										</a>

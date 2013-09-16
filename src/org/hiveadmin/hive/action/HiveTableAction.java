@@ -11,12 +11,19 @@ package org.hiveadmin.hive.action;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 import org.hiveadmin.hive.beans.Columns;
 import org.hiveadmin.hive.service.HiveTableService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -49,6 +56,7 @@ public class HiveTableAction extends ActionSupport {
 	 * select tag in Strust2
 	 */
 	private HashMap<String, String> databaselist;
+	private HashMap<String, String> partitionlist;
 	/**
 	 * server:this property is to provide the services for this class
 	 */
@@ -212,7 +220,8 @@ public class HiveTableAction extends ActionSupport {
 	 */
 	private List<String> cluster_col_list = new ArrayList<String>();
 	/**
-	 * dis_col_list:this property is the name of columns that will be used in distributing
+	 * dis_col_list:this property is the name of columns that will be used in
+	 * distributing
 	 */
 
 	private List<String> dis_col_list = new ArrayList<String>();
@@ -254,6 +263,17 @@ public class HiveTableAction extends ActionSupport {
 	 * table_data:this property is the list of data from a table
 	 */
 	private List<List<String>> table_data;
+	private String errorMsg = null;
+
+	public void keepInfo() {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpSession session = request.getSession();
+		if (database_name != null)
+			session.setAttribute("DBname", database_name);
+		if (table_name != null)
+			session.setAttribute("TBname", table_name);
+	}
 
 	/**
 	 * createTable is the method to provide the service about creating a table
@@ -261,9 +281,17 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String createTable() {
+		 clearErrorsAndMessages();
+		keepInfo();
+		table_name = table_name.trim();
+		System.out.println(table_name + "111111111111");
 		if (table_name == null || table_name.equals("")) {
 			log.error("table name is null");
-			return INPUT;
+			//addFieldError("createTableAction",getText("table name is null"));
+			errorMsg = "table name is null";
+			columns.clear();
+			P_columns.clear();
+			return ERROR;
 
 		}
 		try {
@@ -273,12 +301,17 @@ public class HiveTableAction extends ActionSupport {
 					skewed_col_names, skewed_col_values, row_format_value,
 					file_format, row_sorted_by_cols, hdfs_path,
 					select_statement, exist_table_or_view_name);
-			log.info("Sucess to create table!");
+			// log.info("Sucess to create table!");
+			columns.clear();
+			P_columns.clear();
+			keepInfo();
 			return SUCCESS;
 		} catch (Exception e) {
+			// addFieldError("createTableAction",getText(e.getMessage()));
 
 			e.printStackTrace();
 			log.error(e.getMessage());
+			errorMsg = e.getMessage();
 			return ERROR;
 		}
 
@@ -291,18 +324,15 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String dropTable() {
+		keepInfo();
 
-		if (table_name == null || table_name.equals("")) {
-			log.error("table name is null");
-			return INPUT;
-
-		}
 		try {
 			server.dropTable(table_name, database_name);
 			log.info("Sucess to drop table");
+
 			return SUCCESS;
 		} catch (Exception e) {
-
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -317,17 +347,16 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String truncateTable() {
-		if (table_name == null || table_name.equals("")) {
-			log.error("table name is null");
-			return INPUT;
+		keepInfo();
 
-		}
 		try {
 			server.truncateTable(table_name, partition_spec, database_name);
 			log.info("Success to remove all rows from partition(s)");
+
 			return SUCCESS;
 		} catch (Exception e) {
-
+			partition_spec.clear();
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -341,29 +370,33 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String renameTable() {
+		keepInfo();
 		boolean result = false;
-		if (old_name.equals("") || old_name == null) {
-			log.error("Rename table name error: Old name is null");
-			result = true;
-		}
 		if (new_name.equals("") || new_name == null) {
 			log.error("Rename table name error: New name is null");
+			/*
+			 * addFieldError("createTacleAction",
+			 * getText("Rename table name error: New name is null"));
+			 */
+			errorMsg = "Rename table name error: New name is null";
 			result = true;
 
 		}
 		if (result) {
-			return INPUT;
+			return ERROR;
 		}
 		try {
 			server.renameTable(old_name, new_name, database_name);
 
 			log.info("Success to rename table \"" + old_name + "\"to \""
 					+ new_name + "\"");
+
 			return SUCCESS;
 		} catch (Exception e) {
-
+			/* addFieldError("createTacleAction", getText(e.getMessage())); */
 			e.printStackTrace();
 			log.error(e.toString());
+			errorMsg = e.getMessage();
 			return ERROR;
 		}
 
@@ -376,22 +409,22 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String changeColumn() {
+		keepInfo();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpSession session = request.getSession();
+		session.setAttribute("OldcolName", col_old_name);
+
 		boolean result = false;
-		if (table_name.equals("") || table_name == null) {
-			log.error("Change Column error: Table name is null");
-			result = true;
-		}
-		if (col_old_name.equals("") || col_old_name == null) {
-			log.error("Change Column error: column old name is null");
-			result = true;
-		}
+
 		if (col_new_name.equals("") || col_new_name == null) {
 			log.error("Change Column error: Column new name is null");
+			errorMsg = "Change Column error: Column new name is null";
 			result = true;
 
 		}
 		if (result) {
-			return INPUT;
+			return ERROR;
 		}
 		try {
 			server.changeColumn(table_name, has_column, col_old_name,
@@ -401,7 +434,7 @@ public class HiveTableAction extends ActionSupport {
 			log.info("Success to Change Column ");
 			return SUCCESS;
 		} catch (Exception e) {
-
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -417,20 +450,23 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String addorReplacecolumn() {
+		keepInfo();
 
 		boolean result = false;
 		if (table_name.equals("") || table_name == null) {
 			log.error("Add/replace columnserror: Table name is null");
+			errorMsg = "Add/replace columnserror: Table name is null";
+			columns.clear();
 			result = true;
 		}
 
 		if (columns.isEmpty()) {
 			log.error("Aadd/replace columnserror:Column new name is null");
 			result = true;
-
+			errorMsg = "Aadd/replace columnserror:Column new name is null";
 		}
 		if (result) {
-			return INPUT;
+			return ERROR;
 		}
 		try {
 			server.addorReplacecolumn(true, table_name, columns, database_name);
@@ -438,7 +474,8 @@ public class HiveTableAction extends ActionSupport {
 			log.info("Sucess to add/replace columns");
 			return SUCCESS;
 		} catch (Exception e) {
-
+			columns.clear();
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -453,11 +490,13 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String showTable() {
+		keepInfo();
 
 		try {
 			tableList = server.showTable(database_name);
 			return SUCCESS;
 		} catch (Exception e) {
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -472,16 +511,18 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String showColumns() {
+		keepInfo();
 		if (table_name.equals("") || table_name == null) {
 			log.error("Show columns error:Table name is null");
-			return INPUT;
+			errorMsg = "Show columns error:Table name is null";
+			return ERROR;
 		}
 		try {
 			columns_name = server.showColumns(tb_in_or_from, table_name,
 					database_name, db_in_or_from);
 			return SUCCESS;
 		} catch (Exception e) {
-
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -496,9 +537,11 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String selectFromTable() {
+		keepInfo();
 		if (table_name.equals("") || table_name == null) {
 			log.error("Select from table error:Table name is null");
-			return INPUT;
+			errorMsg = "Select from table error:Table name is null";
+			return ERROR;
 		}
 		showColumns();
 		try {
@@ -509,7 +552,7 @@ public class HiveTableAction extends ActionSupport {
 					database_name);
 			return SUCCESS;
 		} catch (Exception e) {
-
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -524,28 +567,35 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String loadFileIntoTable() {
+		keepInfo();
 		boolean result = false;
 		if (table_name.equals("") || table_name == null) {
 			log.error("Load file into table error:Table name is null");
+			errorMsg = "Load file into table error:Table name is null";
+			partition_spec.clear();
 			result = true;
 		}
 		if (inpath == null || inpath.equals("")) {
-			log.error("Load file into table error:REGEX is null");
+			log.error("Load file into table error:inpath is null");
+			errorMsg = "Load file into table error:inpath is null";
+			partition_spec.clear();
 			result = true;
 		}
 
 		if (result) {
-			return INPUT;
+			return ERROR;
 		}
 		try {
 			server.loadFileIntoTable(inpath, overwrite, table_name, local,
 					partition_spec, database_name);
 			log.info("Sucess to load file into table");
+			partition_spec.clear();
 			return SUCCESS;
 		} catch (Exception e) {
-
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
+			partition_spec.clear();
 			return ERROR;
 		}
 
@@ -558,21 +608,23 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String tableDetails() {
+		keepInfo();
 		boolean result = false;
 		if (table_name.equals("") || table_name == null) {
 			log.error("Load file into table error:Table name is null");
+			errorMsg = "Load file into table error:Table name is null";
 			result = true;
 		}
 
 		if (result) {
-			return INPUT;
+			return ERROR;
 		}
 		try {
 			tableDetails = server.describeTable(table_name, database_name);
 			log.info("Sucess to load file into table");
 			return SUCCESS;
 		} catch (Exception e) {
-
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -586,14 +638,27 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String cloneTo() {
+		keepInfo();
 		try {
 			databaselist = server.cloneTo();
 		} catch (Exception e) {
+
 			e.printStackTrace();
 		}
 		return SUCCESS;
 	}
+	
+/*	public String getPartition(){
+		keepInfo();
+		System.out.print("111111111111111111111111");
+		try {
+			partitionlist = server.showPartition(table_name, database_name);
+		} catch (Exception e) {
 
+			e.printStackTrace();
+		}
+		return SUCCESS;
+	}*/
 	/**
 	 * cloneTable is the method to provide the service: copy an exist table to
 	 * an exist database and rename the table.
@@ -601,10 +666,12 @@ public class HiveTableAction extends ActionSupport {
 	 * @return String
 	 */
 	public String cloneTable() {
+		keepInfo();
 		if (table_new_name.equals("") || table_new_name == null) {
+			errorMsg = "Load file into table error:Table name is null";
 			log.error("Load file into table error:Table name is null");
-			addFieldError("tablename", "table name can't be null");
-			return INPUT;
+			// addFieldError("tablename", "table name can't be null");
+			return ERROR;
 		}
 		try {
 			server.cloneTable(database_name, table_name, to_database_name,
@@ -612,7 +679,7 @@ public class HiveTableAction extends ActionSupport {
 			log.info("Sucess to drop table");
 			return SUCCESS;
 		} catch (Exception e) {
-
+			errorMsg = e.getMessage();
 			e.printStackTrace();
 			log.error(e.toString());
 			return ERROR;
@@ -647,6 +714,14 @@ public class HiveTableAction extends ActionSupport {
 
 	public boolean isIf_not_exists() {
 		return if_not_exists;
+	}
+
+	public HashMap<String, String> getPartitionlist() {
+		return partitionlist;
+	}
+
+	public void setPartitionlist(HashMap<String, String> partitionlist) {
+		this.partitionlist = partitionlist;
 	}
 
 	public void setIf_not_exists(boolean if_not_exists) {
@@ -717,6 +792,14 @@ public class HiveTableAction extends ActionSupport {
 		this.skewed_col_names = skewed_col_names;
 	}
 
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
+
 	public List<String> getSkewed_col_values() {
 		return skewed_col_values;
 	}
@@ -748,7 +831,6 @@ public class HiveTableAction extends ActionSupport {
 	public void setRow_sorted_by_cols(List<Columns> row_sorted_by_cols) {
 		this.row_sorted_by_cols = row_sorted_by_cols;
 	}
-
 
 	public String getHdfs_path() {
 		return hdfs_path;

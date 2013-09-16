@@ -11,13 +11,19 @@ package org.hiveadmin.hive.action;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.hiveadmin.hive.beans.HistoryRecord;
 import org.hiveadmin.hive.service.HiveDatabaseService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -29,6 +35,7 @@ import com.opensymphony.xwork2.ActionSupport;
 @Component
 @Scope("session")
 public class DatabaseAction extends ActionSupport {
+
 
 	private static final long serialVersionUID = 1L;
 	private String databaseName;

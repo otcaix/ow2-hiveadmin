@@ -86,7 +86,7 @@
 
 					<div class="box-content">	
 							<p class="btn-group">
-								<a class="btn btn-small btn-primary" href='tableaction/tablelist?database_name=<s:property value="%{#parameters.database_name}"/>'>
+								<a class="btn btn-small btn-primary" href='tableaction/tablelist?database_name=<s:property value="%{#session.DBname}"/>'>
 											<i class="icon-arrow-left icon-white"></i>  
 											back                                            
 										</a>

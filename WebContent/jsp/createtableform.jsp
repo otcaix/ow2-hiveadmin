@@ -93,17 +93,18 @@
 
 						<div class="box-content">
 							<p class="btn-group">
-									<a class="btn btn-small btn-primary" href='tableaction/tablelist?database_name=<s:property value="%{#parameters.database_name}"/>'>
+									<a class="btn btn-small btn-primary" href='tableaction/tablelist?database_name=<s:property value="%{#session.DBname}"/>'>
 											<i class="icon-arrow-left icon-white"></i>  
 											back                                            
 										</a>
 							</p>
+				 
 							<form class="span9"
 								action='<%=request.getContextPath() + "/tableaction/create"%>'>
 								<fieldset>
 									<legend>Columns</legend>
 									<s:text name="table name" />
-									<s:textfield name="table_name" />
+									<s:textfield name="table_name" /><%-- <font color="RED"><s:fielderror><s:param>createTableAction</s:param></s:fielderror></font> --%>
 									<br>
 									<s:text name="Table type" />
 									<s:select list="#{'true':'External'}" name="external"
@@ -112,7 +113,7 @@
 									<br>
 									<s:text name="Database name" />
 									<s:textfield name="database_name"
-										value="%{#parameters.database_name}" readonly="true" />
+										value="%{#session.DBname}" readonly="true" />
 									<br>
 
 									<s:text name="table comment" />
@@ -127,59 +128,62 @@
 								<p>
 								<fieldset class="form-inline" id="column">
 									<legend>Fields</legend>
-									<div id="cols">
+								
 										<div align="right" style="display:none">
 											
 											<p id="column_num">1</p>
 										</div>
-										<s:text name="Column name" />
-										<s:textfield id="cols_name" name="columns[0].cols_name" />
-										<br>
-										<s:text name="Column type" />
-										<s:select id="cols_type" list="#{'int':'Int'}"
-											name="columns[0].cols_type" listKey="key" listValue="value"
-											headerKey="String" headerValue="String"></s:select>
-										<s:text name="Column comment" />
-										<s:textfield id="cols_comment" name="columns[0].cols_comment" />
-										<br>
-										<div id="cols_-1" style="display: none">
-											<s:text name="Column name" />
-											<s:textfield id="cols_name" />
-											<br>
-											<s:text name="Column type" />
-											<s:select id="cols_type" list="#{'int':'Int'}" listKey="key"
-												listValue="value" headerKey="String" headerValue="String"></s:select>
-											<s:text name="Column comment" />
-											<s:textfield id="cols_comment" />
-											<br>
-										</div>
-									</div>
+										<table id="cols" >
+
+											<tr>
+												<th><s:text name="Column name" /></th>
+												<th><s:text name="Column type" /></th>
+												<th><s:text name="Column comment" /></th>
+											</tr>
+
+											<tr>
+												<td><s:textfield id="cols_name"
+														name="columns[0].cols_name" /></td>
+												<td><s:select id="cols_type" list="#{'TINYINT':'TINYINT','SMALLINT':'SMALLINT',' INT':'INT','BIGINT':'BIGINT','BOOLEAN':'BOOLEAN','FLOAT':'FLOAT','DOUBLE':'DOUBLE','BINARY':'BINARY','TIMESTAMP':'TIMESTAMP','DECIMAL':'DECIMAL'}" 
+														name="columns[0].cols_type" listKey="key" listValue="value"
+														headerKey="STRING" headerValue="STRING"></s:select></td>
+												<td><s:textfield id="cols_comment"
+														name="columns[0].cols_comment" /></td>
+											</tr>
+											<tr id="cols_-1" style="display: none" >
+												<td><s:textfield id="cols_name" /></td>
+												<td><s:select id="cols_type" list="#{'TINYINT':'TINYINT','SMALLINT':'SMALLINT',' INT':'INT','BIGINT':'BIGINT','BOOLEAN':'BOOLEAN','FLOAT':'FLOAT','DOUBLE':'DOUBLE','BINARY':'BINARY','TIMESTAMP':'TIMESTAMP','DECIMAL':'DECIMAL'}" listKey="key"
+													listValue="value" headerKey="STRING" headerValue="STRING"></s:select></td>
+												<td><s:textfield id="cols_comment" /></td>
+											</tr>
+									
+									</table>
+									
                                  <div align="right"></div> <input type="button" class=" btn btn-small btn-warning"id="newColumn" value="New Column" /> 
 									
 										<input type="button" class="btn btn-small btn-info" id="removeColumn" value="Remove Column" />
 								</fieldset>
 								<p>
 								 <fieldset class="form-inline">
-									<legend>Partitioned by</legend>
-									<div id="P_cols" style="display:none">
-										<p id="P_column_num" align="left">0</p>
-										
-										<div id="P_cols_-1" style="display: none">
-											<s:text name="Column name" />
-											<s:textfield id="cols_name" />
-											<br>
-											<s:text name="Column type" />
-											<s:select id="cols_type" list="#{'int':'Int'}" listKey="key"
-												listValue="value" headerKey="String" headerValue="String"></s:select>
-
-											<s:text name="Column comment" />
-											<s:textfield id="cols_comment" />
-											<br>
-
+									<legend>Partitioned by</legend> 
+										<div  align="right"  style="display:none">
+										<p id="P_column_num" >0</p>
 										</div>
-									</div>
-
-									<input type="button" id="newP_Column" class=" btn btn-small btn-warning" value="New Column" /> <input
+										<table id="P_cols">
+										<tr>
+											<th  width="220px">Column name</th>
+											<th  width="220px"> Column type</th>
+											<th  width="220px">Column comment</th>
+										</tr>
+										<tr id="P_cols_-1" style="display: none">
+											<td><s:textfield id="cols_name" /></td>
+											<td><s:select id="cols_type" list="#{'TINYINT':'TINYINT','SMALLINT':'SMALLINT',' INT':'INT','BIGINT':'BIGINT','BOOLEAN':'BOOLEAN','FLOAT':'FLOAT','DOUBLE':'DOUBLE','BINARY':'BINARY','TIMESTAMP':'TIMESTAMP','DECIMAL':'DECIMAL'}" listKey="key"
+												listValue="value" headerKey="STRING" headerValue="STRING"></s:select>
+											</td>
+											<td><s:textfield id="cols_comment" /></td>
+										</tr> 
+										</table>
+	                                   <input type="button" id="newP_Column" class=" btn btn-small btn-warning" value="New Column" /> <input
 										type="button" id="removeP_Column" class="btn btn-small btn-info"  value="Remove Column" />
 								</fieldset> 
 								<p>
@@ -200,7 +204,7 @@
 								<p>
 								<div class="form-actions">
 									<button class="btn btn-small btn-primary" type="submit"><i class="icon-ok icon-white"></i>Create </button>
-									<button class="btn">cancel</button>
+									
 								</div>
 
 							</form>

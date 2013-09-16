@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE struts PUBLIC
-    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
-    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 	<constant name="struts.devMode" value="false" />
 	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!^-]*" />
 	<constant name="struts.ui.theme" value="simple"></constant>
-	
-	<package name="globalpkg" extends="struts-default">
-	<global-results>
-<result name="error">/errorpage.jsp</result>
-</global-results>
-<global-exception-mappings>
-  <exception-mapping result="error" exception="java.lang.NullPointerException">
-</exception-mapping>
-<exception-mapping result="error" exception="java.lang.NoSuchMethodException">
-</exception-mapping>
-<exception-mapping result="error" exception="java.lang.Exception">
-</exception-mapping>
-</global-exception-mappings>
-</package>
 
-	
-	
+	<package name="globalpkg" extends="struts-default">
+		<global-results>
+			<result name="error">/errorpage.jsp</result>
+		</global-results>
+		<global-exception-mappings>
+			<exception-mapping result="error"
+				exception="java.lang.NullPointerException">
+			</exception-mapping>
+			<exception-mapping result="error"
+				exception="java.lang.NoSuchMethodException">
+			</exception-mapping>
+			<exception-mapping result="error" exception="java.lang.Exception">
+			</exception-mapping>
+		</global-exception-mappings>
+	</package>
+
+
+
 	<package name="database" extends="globalpkg" namespace="/databaseAction">
 		<action name="create" class="databaseAction" method="create">
 			<result name="success" type="redirectAction">getDatabaseList</result>
@@ -45,8 +46,7 @@
 			<result name="error">/errorpage.jsp</result>
 		</action>
 	</package>
-	<package name="hdfsOperation" extends="globalpkg"
-		namespace="/hdfsOperation">
+	<package name="hdfsOperation" extends="globalpkg" namespace="/hdfsOperation">
 		<action name="mkdirs" class="HDFSOperationAction" method="mkdirs">
 			<result name="success" type="redirectAction">listFileStatus</result>
 			<result name="error">/errorpage.jsp</result>
@@ -87,8 +87,7 @@
 			<result name="error">/errorpage.jsp</result>
 		</action>
 	</package>
-	<package name="hiveSqlTemplate" extends="globalpkg"
-		namespace="/hiveSqlTemplate">
+	<package name="hiveSqlTemplate" extends="globalpkg" namespace="/hiveSqlTemplate">
 		<action name="createHiveSqlTemplate" class="hiveSqlTemplateAction"
 			method="createHiveSqlTemplate">
 			<result name="success" type="redirectAction">fetchHiveSqlTemplateList</result>
@@ -150,6 +149,7 @@
 	<package name="table" extends="globalpkg" namespace="/tableaction">
 		<action name="tablelist" class="hiveTableAction" method="showTable">
 			<result name="success">/jsp/tablelist.jsp</result>
+			
 			<result name="error">/errorpage.jsp</result>
 		</action>
 		<action name="tabledetail" class="hiveTableAction" method="tableDetails">
@@ -158,6 +158,7 @@
 		</action>
 		<action name="create" class="hiveTableAction" method="createTable">
 			<result name="success" type="redirectAction">tablelist</result>
+		<!-- 	<result name="input" >/jsp/createtableform.jsp</result>  -->
 			<result name="error">/errorpage.jsp</result>
 		</action>
 		<action name="renametable" class="hiveTableAction" method="renameTable">
@@ -167,26 +168,27 @@
 		<action name="droptable" class="hiveTableAction" method="dropTable">
 			<result name="success" type="redirectAction">tablelist</result>
 			<result name="error">/errorpage.jsp</result>
-		</action>
+		</action>	
 		<action name="truncatetable" class="hiveTableAction" method="truncateTable">
-		<result name="success" type="redirectAction">tablelist</result>
-		<result name="error">/errorpage.jsp</result>
+			<result name="success" type="redirectAction">tablelist</result>
+			<result name="error">/errorpage.jsp</result>
 		</action>
-		<action name="loadfileintotable" class="hiveTableAction" method="loadFileIntoTable">
-		<result name="success" type="redirectAction">showtabledata</result>
-		<result name="error"> /errorpage.jps</result>
+		<action name="loadfileintotable" class="hiveTableAction"
+			method="loadFileIntoTable">
+			<result name="success" type="redirectAction">showtabledata</result>
+			<result name="error">/errorpage.jsp</result>
 		</action>
 		<action name="showtabledata" class="hiveTableAction" method="selectFromTable">
-		<result name="success" >/jsp/tabledataform.jsp</result>
-		<result name="error"> /errorpage.jps</result>
+			<result name="success">/jsp/tabledataform.jsp</result>
+			<result name="error">/errorpage.jsp</result>
 		</action>
 		<action name="addcolumns" class="hiveTableAction" method="addorReplacecolumn">
-		<result name="success" type="redirectAction">tabledetail</result>
-		<result name="error"> /errorpage.jps</result>
+			<result name="success" type="redirectAction">tabledetail</result>
+			<result name="error">/errorpage.jsp</result>
 		</action>
 		<action name="changecolumns" class="hiveTableAction" method="changeColumn">
-		<result name="success" type="redirectAction">tabledetail</result>
-		<result name="error"> /errorpage.jps</result>
+			<result name="success" type="redirectAction">tabledetail</result>
+			<result name="error">/errorpage.jsp</result>
 		</action>
 		<action name="cloneto" class="hiveTableAction" method="cloneTo">
 			<result name="success">/jsp/cloneto.jsp</result>
@@ -194,7 +196,7 @@
 		</action>
 		<action name="clonetable" class="hiveTableAction" method="cloneTable">
 			<result name="success" type="redirectAction">tablelist</result>
-			<!-- <result name="input" >/jsp/cloneto.jsp</result>		 -->
+			<!-- <result name="input" >/jsp/cloneto.jsp</result> -->
 			<result name="error">/errorpage.jsp</result>
 		</action>
 	</package>

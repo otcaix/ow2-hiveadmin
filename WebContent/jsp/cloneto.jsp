@@ -95,8 +95,8 @@
 			<fieldset>
 			<legend></legend>
 				<s:text name="Table  name:" />
-				<s:textfield name="table_name" value="%{#parameters.table_name}" readonly="true" />
-				<div style="display:none"><s:textfield name="database_name" value="%{#parameters.database_name}" readonly="true" /></div>
+				<s:textfield name="table_name" value="%{#session.TBname}" readonly="true" />
+				<div style="display:none"><s:textfield name="database_name" value="%{#session.DBname}" readonly="true" /></div>
 				<br>
 				<fieldset>
 				<legend>Clone To</legend>
@@ -106,14 +106,14 @@
 				<s:select list="databaselist" name="to_database_name"
 										listKey="key" listValue="value"></s:select>
 				<s:text name="Table new name:" />
-				<s:textfield name="table_new_name" value="%{#parameters.table_name}"  /><s:fielderror><s:param>tablename</s:param></s:fielderror>
+				<s:textfield name="table_new_name" value="%{#session.TBname}"  /><s:fielderror><s:param>tablename</s:param></s:fielderror>
 				
 			</fieldset>
 			</fieldset>
 		
 			<div class="form-actions">
 				<button class="btn btn-small btn-success" type="submit"><i class="icon-ok icon-white"></i>Clone </button>
-				<button class="btn">Cancel</button>
+
 			</div>
 
 		</form>

@@ -23,7 +23,7 @@
 		padding: 9px 0;
 	  }
 	</style>
-	<link href"css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="css/charisma-app.css" rel="stylesheet">
 	<link href="css/jquery-ui-1.8.21.custom.css" rel="stylesheet">
 	<link href='css/fullcalendar.css' rel='stylesheet'>
